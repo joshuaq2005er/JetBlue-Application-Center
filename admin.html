@@ -1,16 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Admin Dashboard</title>
+<title>JetBlue Admin Dashboard</title>
 
 <style>
-body{font-family:Arial;background:#eef6ff;margin:0;}
+body{
+font-family:Arial;
+background:#eef6ff;
+margin:0;
+}
 
 .header{
 background:#0073e6;
 color:white;
-padding:20px;
 text-align:center;
+padding:20px;
 }
 
 .tabs{
@@ -20,21 +24,39 @@ background:white;
 }
 
 .tab{
-padding:10px;
+padding:10px 15px;
 margin:5px;
 background:#eee;
 cursor:pointer;
+border-radius:6px;
 }
 
-.active{background:#0073e6;color:white;}
+.active{
+background:#0073e6;
+color:white;
+}
 
-.container{width:90%;margin:auto;}
+.container{
+width:90%;
+margin:auto;
+padding-top:10px;
+}
 
 .card{
 background:white;
 padding:15px;
-margin:10px;
+margin:10px 0;
 border-radius:10px;
+box-shadow:0 4px 10px rgba(0,0,0,0.08);
+}
+
+button{
+padding:6px 10px;
+background:#0073e6;
+color:white;
+border:none;
+cursor:pointer;
+margin-top:5px;
 }
 </style>
 </head>
@@ -42,117 +64,149 @@ border-radius:10px;
 <body>
 
 <div class="header">
-<h2>Admin Dashboard</h2>
+<h2>JetBlue Admin Dashboard</h2>
 </div>
 
 <div class="tabs">
-<div class="tab active" onclick="show(0)">Status</div>
-<div class="tab" onclick="show(1)">Applications</div>
-<div class="tab" onclick="show(2)">History</div>
+<div class="tab active" onclick="showTab(0)">Status</div>
+<div class="tab" onclick="showTab(1)">Applications</div>
+<div class="tab" onclick="showTab(2)">History</div>
 </div>
 
-<div class="container" id="status"></div>
-<div class="container" id="apps" style="display:none;"></div>
-<div class="container" id="history" style="display:none;"></div>
+<div class="container" id="statusTab"></div>
+<div class="container" id="appsTab" style="display:none;"></div>
+<div class="container" id="historyTab" style="display:none;"></div>
 
 <script>
 
-let pass=prompt("Admin Password:");
-if(pass!=="1234"){
-document.body.innerHTML="DENIED";
+/* ================= LOGIN ================= */
+let pass = prompt("Admin Password:");
+if(pass !== "1234"){
+document.body.innerHTML = "<h1 style='color:red;text-align:center;margin-top:100px;'>ACCESS DENIED</h1>";
 throw new Error();
 }
 
-function get(k){return JSON.parse(localStorage.getItem(k)||"[]");}
+/* ================= DATA ================= */
+function get(key){
+return JSON.parse(localStorage.getItem(key) || "[]");
+}
 
+/* ================= STATUS ================= */
 function toggle(role){
-let s=localStorage.getItem("role_"+role)||"OPEN";
-localStorage.setItem("role_"+role,s==="OPEN"?"CLOSED":"OPEN");
+let current = localStorage.getItem("role_" + role) || "OPEN";
+let newStatus = current === "OPEN" ? "CLOSED" : "OPEN";
+localStorage.setItem("role_" + role, newStatus);
 load();
 }
 
+/* ================= LOAD ================= */
 function load(){
 
-let roles=["Flight Deck","Cabin Crew","Ground Crew"];
+const statusTab = document.getElementById("statusTab");
+const appsTab = document.getElementById("appsTab");
+const historyTab = document.getElementById("historyTab");
 
-let statusDiv=document.getElementById("status");
-let appsDiv=document.getElementById("apps");
-let historyDiv=document.getElementById("history");
+statusTab.innerHTML = "";
+appsTab.innerHTML = "";
+historyTab.innerHTML = "";
 
-statusDiv.innerHTML="";
-appsDiv.innerHTML="";
-historyDiv.innerHTML="";
+/* ROLES */
+let roles = ["Flight Deck","Cabin Crew","Ground Crew"];
 
-// STATUS
-roles.forEach(r=>{
-let s=localStorage.getItem("role_"+r)||"OPEN";
+roles.forEach(role=>{
+let status = localStorage.getItem("role_" + role) || "OPEN";
 
-statusDiv.innerHTML+=`
+statusTab.innerHTML += `
 <div class="card">
-<b>${r}</b> - ${s}
-<button onclick="toggle('${r}')">Toggle</button>
+<b>${role}</b><br>
+Status: ${status}<br>
+<button onclick="toggle('${role}')">Toggle OPEN/CLOSED</button>
 </div>
 `;
 });
 
-// APPLICATIONS (FULL ANSWERS)
-get("apps").forEach(a=>{
-appsDiv.innerHTML+=`
+/* APPLICATIONS (FULL ANSWERS) */
+let apps = get("apps");
+
+if(apps.length === 0){
+appsTab.innerHTML = "<div class='card'>No applications yet</div>";
+} else {
+
+apps.forEach(a=>{
+appsTab.innerHTML += `
 <div class="card">
 
 <h3>${a.role}</h3>
 
-<b>Discord:</b> ${a.discord}<br>
-<b>Roblox:</b> ${a.roblox}<br>
-<b>Time:</b> ${a.time}<br>
-<b>Age:</b> ${a.age}<br><br>
+<b>Discord:</b> ${a.discord || ""}<br>
+<b>Discord ID:</b> ${a.discordid || ""}<br>
+<b>Roblox:</b> ${a.roblox || ""}<br>
+<b>Time:</b> ${a.time || ""}<br>
+<b>Age:</b> ${a.age || ""}<br>
+<b>Date:</b> ${a.date || ""}<br>
 
-<b>WHY:</b><br>${a.why}<br><br>
+<hr>
 
-<b>FLIGHT:</b><br>
-Flaps: ${a.flaps}<br>
-VFR: ${a.vfr}<br>
-ILS: ${a.ils}<br>
-Chart: ${a.chart}<br>
-Callouts: ${a.callouts}<br>
-Plan: ${a.plan}<br><br>
+<b>WHY APPLY:</b><br>${a.why || ""}<br><br>
 
-<b>SCENARIOS:</b><br>
-${a.disturb}<br>
-${a.fire}<br>
-${a.trolls}
+<b>STRENGTHS:</b><br>${a.strengths || ""}<br><br>
+
+<hr>
+
+<b>FLIGHT QUESTIONS</b><br>
+Flaps: ${a.flaps || ""}<br>
+VFR/IFR: ${a.vfr || ""}<br>
+ILS: ${a.ils || ""}<br>
+Chart: ${a.chart || ""}<br>
+Callouts: ${a.callouts || ""}<br>
+Flight Plan: ${a.plan || ""}<br><br>
+
+<b>SCENARIOS</b><br>
+Disturbance: ${a.disturb || ""}<br>
+Fire: ${a.fire || ""}<br>
+Trolls: ${a.trolls || ""}
 
 </div>
 `;
 });
+}
 
-// HISTORY
-get("history").forEach(a=>{
-historyDiv.innerHTML+=`
+/* HISTORY */
+let history = get("history");
+
+if(history.length === 0){
+historyTab.innerHTML = "<div class='card'>No history yet</div>";
+} else {
+
+history.forEach(a=>{
+historyTab.innerHTML += `
 <div class="card">
 <b>${a.role}</b><br>
-${a.discord}<br>
-${a.roblox}<br>
-${a.date}
+${a.discord || ""}<br>
+${a.roblox || ""}<br>
+${a.date || ""}
 </div>
 `;
 });
+}
 
 }
 
-function show(i){
+/* ================= TABS ================= */
+function showTab(i){
 
-["status","apps","history"].forEach((id,j)=>{
-document.getElementById(id).style.display=j===i?"block":"none";
-});
+document.getElementById("statusTab").style.display = i===0 ? "block" : "none";
+document.getElementById("appsTab").style.display = i===1 ? "block" : "none";
+document.getElementById("historyTab").style.display = i===2 ? "block" : "none";
 
-document.querySelectorAll(".tab").forEach((t,j)=>{
+document.querySelectorAll(".tab").forEach((t,index)=>{
 t.classList.remove("active");
-if(i===j)t.classList.add("active");
+if(index===i)t.classList.add("active");
 });
 
 }
 
+/* INIT */
 load();
 
 </script>
