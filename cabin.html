@@ -10,18 +10,8 @@ font-family:Arial;
 background:linear-gradient(135deg,#dff1ff,#f7fbff);
 }
 
-.container{
-width:900px;
-margin:40px auto;
-}
-
-.card{
-background:white;
-padding:30px;
-border-radius:18px;
-box-shadow:0 10px 30px rgba(0,0,0,0.08);
-}
-
+.container{width:900px;margin:40px auto;}
+.card{background:white;padding:30px;border-radius:18px;}
 h2{text-align:center;color:#0073e6;}
 
 .section{display:none;}
@@ -36,11 +26,11 @@ border:1px solid #ddd;
 }
 
 button{
-padding:12px 18px;
+padding:12px;
 background:#0073e6;
 color:white;
 border:none;
-border-radius:12px;
+border-radius:10px;
 cursor:pointer;
 }
 
@@ -53,7 +43,7 @@ cursor:pointer;
 <div class="container">
 <div class="card">
 
-<h2>JetBlue Cabin Crew Application</h2>
+<h2>Cabin Crew Application</h2>
 <div id="form"></div>
 
 </div>
@@ -63,32 +53,22 @@ cursor:pointer;
 
 let role="Cabin Crew";
 
-let status=localStorage.getItem("roleStatus_"+role)||"OPEN";
-
-if(status==="CLOSED"){
-document.body.innerHTML="<h1 style='color:red;text-align:center;margin-top:100px'>APPLICATION CLOSED</h1>";
-throw new Error();
-}
-
+/* SECTION 1 */
 document.getElementById("form").innerHTML=`
 
-<!-- SECTION 1 -->
 <div class="section active">
 <h3>Section 1</h3>
-
-<pre style="white-space:pre-wrap;font-family:Arial;line-height:1.4">
+<pre>
 JetBlue Cabin Crew Application
-
 No AI allowed.
 Failure = blacklist.
 </pre>
-
 <button onclick="next()">Continue</button>
 </div>
 
 <!-- SECTION 2 -->
 <div class="section">
-<h3>Section 2 - Applicant Information</h3>
+<h3>Section 2</h3>
 
 <input id="discord" placeholder="Discord username *">
 <input id="discordid" placeholder="Discord ID *">
@@ -103,15 +83,12 @@ Failure = blacklist.
 <option>21+</option>
 </select>
 
-<input id="proof" placeholder="Outfit proof link *">
-
-<div class="error" id="e2"></div>
-<button onclick="v2()">Next</button>
+<button onclick="next()">Next</button>
 </div>
 
 <!-- SECTION 3 -->
 <div class="section">
-<h3>Section 3 - Activity</h3>
+<h3>Section 3</h3>
 
 <input id="timezone" placeholder="Timezone *">
 <input id="robloxact" placeholder="Roblox activity 1-5 *">
@@ -119,37 +96,25 @@ Failure = blacklist.
 <input id="device" placeholder="Device *">
 <input id="grammar" placeholder="Grammar 1-5 *">
 
-<div class="error" id="e3"></div>
-<button onclick="v3()">Next</button>
+<button onclick="next()">Next</button>
 </div>
 
 <!-- SECTION 4 -->
 <div class="section">
-<h3>Section 4 - About You</h3>
+<h3>Section 4</h3>
 
 <textarea id="words" placeholder="3 words *"></textarea>
-
-<select id="exp">
-<option value="">Experience *</option>
-<option>Yes</option>
-<option>No</option>
-</select>
-
-<select id="mic">
-<option value="">Mic *</option>
-<option>Yes</option>
-<option>No</option>
-</select>
+<select id="exp"><option value="">Experience *</option><option>Yes</option><option>No</option></select>
+<select id="mic"><option value="">Mic *</option><option>Yes</option><option>No</option></select>
 
 <textarea id="why" placeholder="Why JetBlue? *"></textarea>
 <textarea id="standout" placeholder="Stand out? *"></textarea>
 <textarea id="strengths" placeholder="Strengths & Weaknesses *"></textarea>
 
-<div class="error" id="e4"></div>
-<button onclick="v4()">Next</button>
+<button onclick="next()">Next</button>
 </div>
 
-<!-- SECTION 5 -->
+<!-- SECTION 5 (YOUR QUESTIONS - UNCHANGED) -->
 <div class="section">
 <h3>Section 5 - Cabin Crew Questions</h3>
 
@@ -158,81 +123,57 @@ Failure = blacklist.
 <textarea id="s3" placeholder="If a passenger is causing disturbance, what should you do? *"></textarea>
 <textarea id="s4" placeholder="During an emergency, what is your role? *"></textarea>
 
-<div class="error" id="e5"></div>
-<button onclick="v5()">Next</button>
+<button onclick="next()">Next</button>
 </div>
 
 <!-- SECTION 6 -->
 <div class="section">
-<h3>Section 6 - Agreements</h3>
+<h3>Section 6</h3>
 
-<select id="agree1">
-<option value="">Do you agree to not leak ANY documents?*</option>
-<option>Yes</option><option>No</option><option>Maybe</option>
-</select>
+<select id="agree1"><option value="">Agree no leak *</option><option>Yes</option></select>
+<select id="agree2"><option value="">Follow rules *</option><option>Yes</option></select>
 
-<select id="agree2">
-<option value="">Do you agree to follow all rules as Cabin Crew?*</option>
-<option>Yes</option><option>No</option><option>Maybe</option>
-</select>
-
-<div class="error" id="e6"></div>
 <button onclick="submit()">Submit</button>
 </div>
 
 `;
 
+/* NAV */
 let sections=document.querySelectorAll(".section");
 let c=0;
-
-function show(){sections.forEach((s,i)=>s.classList.toggle("active",i===c));}
 function next(){if(c<sections.length-1)c++;show();}
-function back(){if(c>0)c--;show();}
-
-/* VALIDATION */
-function v2(){if(!discord.value||!discordid.value||!roblox.value||!time.value||!age.value||!proof.value){e2.innerText="Fill all fields";return;}e2.innerText="";next();}
-function v3(){if(!timezone.value||!robloxact.value||!discordact.value||!device.value||!grammar.value){e3.innerText="Fill all fields";return;}e3.innerText="";next();}
-function v4(){if(!words.value||!exp.value||!mic.value||!why.value||!standout.value||!strengths.value){e4.innerText="Fill all fields";return;}e4.innerText="";next();}
-function v5(){if(!s1.value||!s2.value||!s3.value||!s4.value){e5.innerText="Fill all fields";return;}e5.innerText="";next();}
+function show(){sections.forEach((s,i)=>s.classList.toggle("active",i===c));}
 
 /* SUBMIT */
 function submit(){
-
-if(!agree1.value||!agree2.value){e6.innerText="Complete agreements";return;}
 
 let apps=JSON.parse(localStorage.getItem("apps")||"[]");
 
 apps.push({
 role:"Cabin Crew",
-
 discord:discord.value,
 discordid:discordid.value,
 roblox:roblox.value,
 time:time.value,
 age:age.value,
 proof:proof.value,
-
 timezone:timezone.value,
 robloxact:robloxact.value,
 discordact:discordact.value,
 device:device.value,
 grammar:grammar.value,
-
 words:words.value,
 exp:exp.value,
 mic:mic.value,
 why:why.value,
 standout:standout.value,
 strengths:strengths.value,
-
 s1:s1.value,
 s2:s2.value,
 s3:s3.value,
 s4:s4.value,
-
 agree1:agree1.value,
 agree2:agree2.value,
-
 date:new Date().toLocaleString(),
 hidden:false,
 deleted:false
