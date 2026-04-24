@@ -4,11 +4,7 @@
   <title>JetBlue Application</title>
 
   <style>
-    body {
-      font-family: Arial;
-      margin: 0;
-      background: #eef6ff;
-    }
+    body { font-family: Arial; margin: 0; background: #eef6ff; }
 
     .container {
       width: 750px;
@@ -116,7 +112,7 @@ let status = params.get("status") || "OPEN";
 document.getElementById("roleText").innerText =
 "Applying for: " + role + " (" + status + ")";
 
-// progress
+// progress bar
 const inputs = document.querySelectorAll("input, textarea, select");
 const fill = document.getElementById("fill");
 const progress = document.getElementById("progress");
