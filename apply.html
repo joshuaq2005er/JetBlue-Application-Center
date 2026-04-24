@@ -4,26 +4,54 @@
 <title>JetBlue Application</title>
 
 <style>
-body{font-family:Arial;background:#eef6ff;margin:0;}
-.container{width:850px;margin:20px auto;}
-.box{background:white;padding:20px;border-radius:10px;}
+body{
+margin:0;
+font-family:Arial;
+background:linear-gradient(135deg,#dff1ff,#f7fbff);
+}
+
+.container{
+width:900px;
+margin:40px auto;
+}
+
+.card{
+background:white;
+padding:30px;
+border-radius:18px;
+box-shadow:0 10px 30px rgba(0,0,0,0.08);
+}
+
+h2{
+text-align:center;
+color:#0073e6;
+}
 
 .section{display:none;}
 .active{display:block;}
 
 input,textarea,select{
 width:100%;
-padding:8px;
-margin:5px 0;
+padding:12px;
+margin:6px 0;
+border-radius:12px;
+border:1px solid #ddd;
+outline:none;
 }
 
 button{
-padding:10px;
+padding:12px 18px;
 background:#0073e6;
 color:white;
 border:none;
+border-radius:12px;
 cursor:pointer;
-margin:5px;
+margin-top:10px;
+}
+
+.nav{
+display:flex;
+justify-content:space-between;
 }
 </style>
 </head>
@@ -31,9 +59,9 @@ margin:5px;
 <body>
 
 <div class="container">
-<div class="box">
+<div class="card">
 
-<h2 id="title"></h2>
+<h2 id="title">Application</h2>
 
 <div id="form"></div>
 
@@ -42,177 +70,140 @@ margin:5px;
 
 <script>
 
-let role=new URLSearchParams(location.search).get("role");
+/* ================= ROLE ================= */
+let role = new URLSearchParams(location.search).get("role") || "Flight Deck";
 
-let status=localStorage.getItem("role_"+role)||"OPEN";
+/* ================= STATUS CHECK ================= */
+let status = localStorage.getItem("roleStatus_" + role) || "OPEN";
 
-if(status==="CLOSED"){
-document.body.innerHTML=`
-<h1 style="color:red;text-align:center;margin-top:100px;">
-🚫 Applications Closed
-</h1>
-<button onclick="location.href='index.html'">Go Back</button>
+if(status === "CLOSED"){
+document.body.innerHTML = `
+<div style="text-align:center;margin-top:150px;font-family:Arial;">
+<h1 style="color:red;">🚫 ${role} Applications Closed</h1>
+<p>Please check back later.</p>
+
+<button onclick="location.href='index.html'"
+style="padding:10px 20px;background:#0073e6;color:white;border:none;border-radius:10px;">
+Go Back
+</button>
+</div>
 `;
-throw new Error();
+throw new Error("CLOSED");
 }
 
-document.getElementById("title").innerText="Applying for "+role;
+document.getElementById("title").innerText = role + " Application";
 
-document.getElementById("form").innerHTML=`
+/* ================= FORM ================= */
+document.getElementById("form").innerHTML = `
 
 <!-- SECTION 1 -->
 <div class="section active">
-<h3>Section 1 of 7</h3>
-<p>JetBlue Flight Deck Application Introduction</p>
-<button onclick="next()">Next</button>
+<h3>Welcome</h3>
+<p>You are applying for: <b>${role}</b></p>
+<button onclick="next()">Start</button>
 </div>
 
 <!-- SECTION 2 -->
 <div class="section">
-<h3>Applicant Information</h3>
+<h3>Applicant Info</h3>
 
 <input id="discord" placeholder="Discord Username">
-<input id="discordid" placeholder="Discord ID">
 <input id="roblox" placeholder="Roblox Username">
 <input id="time" placeholder="PTFS Flight Time">
-<input id="age" placeholder="Age Group">
-<input id="proof" placeholder="Gamepass Proof">
 
+<div class="nav">
 <button onclick="back()">Back</button>
 <button onclick="next()">Next</button>
+</div>
 </div>
 
 <!-- SECTION 3 -->
 <div class="section">
-<h3>Activity</h3>
+<h3>About You</h3>
 
-<input id="timezone" placeholder="Timezone">
-<input id="robloxact" placeholder="Roblox Activity 1-5">
-<input id="discordact" placeholder="Discord Activity 1-5">
-<input id="device" placeholder="Device">
-<input id="grammar" placeholder="Grammar 1-5">
+<textarea id="why" placeholder="Why do you want to join?"></textarea>
+<textarea id="strengths" placeholder="Strengths / Weaknesses"></textarea>
 
+<div class="nav">
 <button onclick="back()">Back</button>
 <button onclick="next()">Next</button>
+</div>
 </div>
 
 <!-- SECTION 4 -->
 <div class="section">
-<h3>About You</h3>
+<h3>Flight Knowledge</h3>
 
-<textarea id="words" placeholder="3 words"></textarea>
-<textarea id="experience" placeholder="Experience"></textarea>
-<textarea id="mic" placeholder="Mic?"></textarea>
-<textarea id="why" placeholder="Why JetBlue?"></textarea>
-<textarea id="standout" placeholder="Standout"></textarea>
-<textarea id="strengths" placeholder="Strengths/Weaknesses"></textarea>
+<textarea id="flaps" placeholder="When to retract flaps"></textarea>
+<textarea id="vfr" placeholder="VFR / IFR meaning"></textarea>
+<textarea id="ils" placeholder="What is ILS"></textarea>
 
+<div class="nav">
 <button onclick="back()">Back</button>
 <button onclick="next()">Next</button>
+</div>
 </div>
 
 <!-- SECTION 5 -->
 <div class="section">
-<h3>Flight Questions</h3>
+<h3>Submit</h3>
 
-<textarea id="flaps"></textarea>
-<textarea id="vfr"></textarea>
-<textarea id="ils"></textarea>
-<textarea id="chart"></textarea>
-<textarea id="callouts"></textarea>
-<textarea id="plan"></textarea>
+<button onclick="submit()">Submit Application</button>
 
+<div class="nav">
 <button onclick="back()">Back</button>
-<button onclick="next()">Next</button>
 </div>
-
-<!-- SECTION 6 -->
-<div class="section">
-<h3>Scenarios</h3>
-
-<textarea id="disturb"></textarea>
-<textarea id="fire"></textarea>
-<textarea id="trolls"></textarea>
-
-<button onclick="back()">Back</button>
-<button onclick="next()">Next</button>
-</div>
-
-<!-- SECTION 7 -->
-<div class="section">
-<h3>Agreements</h3>
-
-<select id="agree1"><option>Yes</option><option>No</option><option>Maybe</option></select>
-<select id="agree2"><option>Yes</option><option>No</option><option>Maybe</option></select>
-
-<button onclick="submit()">Submit</button>
-<button onclick="back()">Back</button>
 </div>
 
 `;
 
-let sections=document.querySelectorAll(".section");
-let current=0;
+/* ================= NAVIGATION ================= */
+let sections = document.querySelectorAll(".section");
+let current = 0;
 
 function show(){
 sections.forEach((s,i)=>{
-s.classList.remove("active");
-if(i===current)s.classList.add("active");
+s.classList.toggle("active", i===current);
 });
 }
 
-function next(){if(current<sections.length-1)current++;show();}
-function back(){if(current>0)current--;show();}
+function next(){
+if(current < sections.length-1) current++;
+show();
+}
 
+function back(){
+if(current > 0) current--;
+show();
+}
+
+/* ================= SUBMIT ================= */
 function submit(){
 
-let apps=JSON.parse(localStorage.getItem("apps")||"[]");
+let apps = JSON.parse(localStorage.getItem("apps") || "[]");
 
 apps.push({
-id:Date.now(),
-role:"Flight Deck",
-
-discord:discord.value,
-discordid:discordid.value,
-roblox:roblox.value,
-time:time.value,
-age:age.value,
-proof:proof.value,
-
-timezone:timezone.value,
-robloxact:robloxact.value,
-discordact:discordact.value,
-device:device.value,
-grammar:grammar.value,
-
-words:words.value,
-experience:experience.value,
-mic:mic.value,
-why:why.value,
-standout:standout.value,
-strengths:strengths.value,
-
-flaps:flaps.value,
-vfr:vfr.value,
-ils:ils.value,
-chart:chart.value,
-callouts:callouts.value,
-plan:plan.value,
-
-disturb:disturb.value,
-fire:fire.value,
-trolls:trolls.value,
-
-date:new Date().toLocaleString()
+role:role,
+discord:discord.value || "",
+roblox:roblox.value || "",
+time:time.value || "",
+why:why.value || "",
+strengths:strengths.value || "",
+flaps:flaps.value || "",
+vfr:vfr.value || "",
+ils:ils.value || "",
+date:new Date().toLocaleString(),
+hidden:false,
+deleted:false
 });
 
-localStorage.setItem("apps",JSON.stringify(apps));
+localStorage.setItem("apps", JSON.stringify(apps));
 
-let history=JSON.parse(localStorage.getItem("history")||"[]");
+let history = JSON.parse(localStorage.getItem("history") || "[]");
 history.push(apps[apps.length-1]);
-localStorage.setItem("history",JSON.stringify(history));
+localStorage.setItem("history", JSON.stringify(history));
 
-alert("Submitted!");
+alert("Application Submitted!");
 location.href="index.html";
 }
 
