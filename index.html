@@ -37,10 +37,7 @@ transition:0.2s;
 transform:scale(1.02);
 }
 
-.status{
-font-weight:bold;
-}
-
+.status{font-weight:bold;}
 .open{color:green;}
 .closed{color:red;}
 
@@ -54,7 +51,6 @@ color:white;
 padding:15px 25px;
 border-radius:12px;
 display:none;
-box-shadow:0 10px 20px rgba(0,0,0,0.2);
 z-index:999;
 }
 </style>
@@ -72,19 +68,19 @@ JetBlue Application Center
 
 <div class="card" onclick="openApp('Flight Deck','apply.html?role=Flight%20Deck')">
 <h3>Flight Deck</h3>
-<p>Take the reins and lead the way to unlimited destinations.</p>
+<p>Pilot aircraft safely and efficiently.</p>
 Status: <span id="fd" class="status"></span>
 </div>
 
 <div class="card" onclick="openApp('Cabin Crew','cabin.html')">
 <h3>Cabin Crew</h3>
-<p>Provide the utmost comfort and hospitality to our passengers.</p>
+<p>Assist passengers and ensure onboard safety.</p>
 Status: <span id="cc" class="status"></span>
 </div>
 
 <div class="card" onclick="openApp('Ground Crew','ground.html')">
 <h3>Ground Crew</h3>
-<p>Ensure safety and readiness of aircraft operations.</p>
+<p>Maintain aircraft operations on ground.</p>
 Status: <span id="gc" class="status"></span>
 </div>
 
@@ -92,7 +88,7 @@ Status: <span id="gc" class="status"></span>
 
 <script>
 
-/* STATUS SYSTEM */
+/* ===== STATUS SYSTEM ===== */
 function getStatus(role){
 let s = localStorage.getItem("roleStatus_"+role);
 if(!s){
@@ -105,36 +101,32 @@ return s;
 function setStatus(id,role){
 let el=document.getElementById(id);
 let s=getStatus(role);
-
 el.innerText=s;
 el.className="status "+(s==="OPEN"?"open":"closed");
 }
 
-/* ERROR */
+/* ===== ERROR ===== */
 function showError(msg){
 let box=document.getElementById("errorBox");
 box.innerText=msg;
 box.style.display="block";
-
-setTimeout(()=>{
-box.style.display="none";
-},5000);
+setTimeout(()=>box.style.display="none",4000);
 }
 
-/* OPEN */
+/* ===== OPEN APP ===== */
 function openApp(role,link){
 
 let status=getStatus(role);
 
 if(status==="CLOSED"){
-showError("Current application you've chosen is closed.");
+showError(role + " application is currently closed.");
 return;
 }
 
 location.href=link;
 }
 
-/* INIT */
+/* ===== INIT STATUS ===== */
 setStatus("fd","Flight Deck");
 setStatus("cc","Cabin Crew");
 setStatus("gc","Ground Crew");
