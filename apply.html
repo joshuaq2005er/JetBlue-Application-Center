@@ -1,19 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Apply - JetBlue</title>
+  <title>Apply - JetBlue Careers</title>
 
   <style>
     body {
-      margin: 0;
       font-family: Arial;
-      background: linear-gradient(135deg, #e6f2ff, #ffffff);
+      background: #eef6ff;
       text-align: center;
     }
 
     .box {
       width: 420px;
-      margin: 70px auto;
+      margin: 60px auto;
       background: white;
       padding: 25px;
       border-radius: 12px;
@@ -44,35 +43,59 @@
 
     .role {
       font-weight: bold;
-      color: #444;
       margin-bottom: 10px;
+      color: #444;
     }
   </style>
-
 </head>
 
 <body>
 
-  <div class="box">
+<div class="box">
 
-    <h1>Application Form</h1>
+  <h1>Application Form</h1>
 
-    <div class="role" id="roleText"></div>
+  <div class="role" id="roleText"></div>
 
-    <form>
-      <input type="text" placeholder="Full Name" required>
-      <input type="email" placeholder="Email" required>
-      <textarea placeholder="Why do you want to join?" rows="5" required></textarea>
-      <button type="submit">Submit Application</button>
-    </form>
+  <form onsubmit="saveApplication(event)">
+    <input type="text" placeholder="Full Name" required>
+    <input type="email" placeholder="Email" required>
+    <textarea placeholder="Why do you want to join?" required></textarea>
+    <button type="submit">Submit Application</button>
+  </form>
 
-  </div>
+</div>
 
-  <script>
-    const params = new URLSearchParams(window.location.search);
-    const role = params.get("role");
-    document.getElementById("roleText").innerText = "Applying for: " + role;
-  </script>
+<script>
+const params = new URLSearchParams(window.location.search);
+const role = params.get("role");
+document.getElementById("roleText").innerText = "Applying for: " + role;
+
+function saveApplication(event) {
+  event.preventDefault();
+
+  const name = document.querySelector("input[type='text']").value;
+  const email = document.querySelector("input[type='email']").value;
+  const message = document.querySelector("textarea").value;
+
+  let apps = JSON.parse(localStorage.getItem("applications") || "[]");
+
+  apps.push({
+    id: Date.now(),
+    role,
+    name,
+    email,
+    message,
+    status: "Pending",
+    date: new Date().toLocaleString()
+  });
+
+  localStorage.setItem("applications", JSON.stringify(apps));
+
+  alert("Application submitted!");
+  window.location.href = "index.html";
+}
+</script>
 
 </body>
 </html>
