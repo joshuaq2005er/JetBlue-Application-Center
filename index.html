@@ -72,17 +72,17 @@ JetBlue Application Center
 
 <div class="card" onclick="openApp('Flight Deck','apply.html?role=Flight%20Deck')">
 <h3>Flight Deck</h3>
-<p>Take the reigns and lead the way to unlimited destinations.</p>
+<p>Take the reins and lead the way to unlimited destinations.</p>
 Status: <span id="fd" class="status"></span>
 </div>
 
-<div class="card" onclick="openApp('Cabin Crew','apply.html?role=Cabin%20Crew')">
+<div class="card" onclick="openApp('Cabin Crew','cabin.html')">
 <h3>Cabin Crew</h3>
 <p>Provide the utmost comfort and hospitality to our passengers.</p>
 Status: <span id="cc" class="status"></span>
 </div>
 
-<div class="card" onclick="openApp('Ground Crew','apply.html?role=Ground%20Crew')">
+<div class="card" onclick="openApp('Ground Crew','ground.html')">
 <h3>Ground Crew</h3>
 <p>Ensure safety and readiness of aircraft operations.</p>
 Status: <span id="gc" class="status"></span>
@@ -92,7 +92,7 @@ Status: <span id="gc" class="status"></span>
 
 <script>
 
-/* ===== STATUS SYSTEM ===== */
+/* STATUS SYSTEM */
 function getStatus(role){
 let s = localStorage.getItem("roleStatus_"+role);
 if(!s){
@@ -110,7 +110,7 @@ el.innerText=s;
 el.className="status "+(s==="OPEN"?"open":"closed");
 }
 
-/* ===== ERROR MESSAGE ===== */
+/* ERROR */
 function showError(msg){
 let box=document.getElementById("errorBox");
 box.innerText=msg;
@@ -121,7 +121,7 @@ box.style.display="none";
 },5000);
 }
 
-/* ===== OPEN APPLICATION ===== */
+/* OPEN */
 function openApp(role,link){
 
 let status=getStatus(role);
@@ -134,7 +134,7 @@ return;
 location.href=link;
 }
 
-/* ===== INIT ===== */
+/* INIT */
 setStatus("fd","Flight Deck");
 setStatus("cc","Cabin Crew");
 setStatus("gc","Ground Crew");
