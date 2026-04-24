@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Cabin Crew Application</title>
+
+<style>
+body{
+margin:0;
+font-family:Arial;
+background:linear-gradient(135deg,#dff1ff,#f7fbff);
+}
+
+.container{
+width:900px;
+margin:40px auto;
+}
+
+.card{
+background:white;
+padding:30px;
+border-radius:18px;
+box-shadow:0 10px 30px rgba(0,0,0,0.08);
+}
+
+h2{
+text-align:center;
+color:#0073e6;
+}
+
+.section{display:none;}
+.active{display:block;}
+
+input,textarea,select{
+width:100%;
+padding:12px;
+margin:6px 0;
+border-radius:12px;
+border:1px solid #ddd;
+}
+
+button{
+padding:12px 18px;
+background:#0073e6;
+color:white;
+border:none;
+border-radius:12px;
+cursor:pointer;
+}
+
+.nav{
+display:flex;
+justify-content:space-between;
+}
+
+.error{color:red;font-size:13px;}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<div class="card">
+
+<h2>JetBlue Cabin Crew Application</h2>
+<div id="form"></div>
+
+</div>
+</div>
+
+<script>
+
+let role="Cabin Crew";
+
+let status=localStorage.getItem("roleStatus_"+role)||"OPEN";
+
+if(status==="CLOSED"){
+document.body.innerHTML="<h1 style='color:red;text-align:center;margin-top:100px'>APPLICATION CLOSED</h1>";
+throw new Error();
+}
+
+/* FORM */
+document.getElementById("form").innerHTML=`
+
+<div class="section active">
+<h3>Section 1 of 6</h3>
+<pre style="white-space:pre-wrap;font-family:Arial">
+
+JetBlue Cabin Crew Application
+
+- No AI usage
+- Must be 13+
+- Follow all rules
+
+</pre>
+<button onclick="next()">Continue</button>
+</div>
+
+<div class="section">
+<h3>Section 2</h3>
+
+<input id="cc_discord" placeholder="Discord username *">
+<input id="cc_discordid" placeholder="Discord ID *">
+<input id="cc_roblox" placeholder="Roblox username *">
+<input id="cc_time" placeholder="PTFS time *">
+
+<select id="cc_age">
+<option value="">Age *</option>
+<option>13-15</option>
+<option>16-17</option>
+<option>18-20</option>
+<option>21+</option>
+</select>
+
+<input id="cc_proof" placeholder="Proof link *">
+
+<div class="error" id="cc_e2"></div>
+
+<button onclick="v2()">Next</button>
+</div>
+
+<div class="section">
+<h3>Section 3 - Activity</h3>
+
+<input id="cc_timezone" placeholder="Timezone *">
+<input id="cc_robloxact" placeholder="Roblox activity 1-5 *">
+<input id="cc_discordact" placeholder="Discord activity 1-5 *">
+<input id="cc_device" placeholder="Device *">
+<input id="cc_grammar" placeholder="Grammar 1-5 *">
+
+<div class="error" id="cc_e3"></div>
+
+<button onclick="v3()">Next</button>
+</div>
+
+<div class="section">
+<h3>Section 4 - About You</h3>
+
+<textarea id="cc_words" placeholder="3 words *"></textarea>
+
+<select id="cc_exp">
+<option value="">Experience *</option>
+<option>Yes</option>
+<option>No</option>
+</select>
+
+<select id="cc_mic">
+<option value="">Mic *</option>
+<option>Yes</option>
+<option>No</option>
+</select>
+
+<textarea id="cc_why" placeholder="Why JetBlue? *"></textarea>
+<textarea id="cc_standout" placeholder="Stand out? *"></textarea>
+<textarea id="cc_strengths" placeholder="Strengths/Weaknesses *"></textarea>
+
+<div class="error" id="cc_e4"></div>
+
+<button onclick="v4()">Next</button>
+</div>
+
+<div class="section">
+<h3>Section 5 - Cabin Crew Questions</h3>
+
+<textarea id="cc_s1" placeholder="Job during cruise? *"></textarea>
+<textarea id="cc_s2" placeholder="Passenger request? *"></textarea>
+<textarea id="cc_s3" placeholder="Disturbance? *"></textarea>
+<textarea id="cc_s4" placeholder="Emergency role? *"></textarea>
+
+<div class="error" id="cc_e5"></div>
+
+<button onclick="v5()">Next</button>
+</div>
+
+<div class="section">
+<h3>Section 6 - Agreements</h3>
+
+<select id="cc_agree1">
+<option value="">Leak rules? *</option>
+<option>Yes</option>
+<option>No</option>
+<option>Maybe</option>
+</select>
+
+<select id="cc_agree2">
+<option value="">Follow rules? *</option>
+<option>Yes</option>
+<option>No</option>
+<option>Maybe</option>
+</select>
+
+<div class="error" id="cc_e6"></div>
+
+<button onclick="submit()">Submit</button>
+</div>
+
+`;
+
+let sections=document.querySelectorAll(".section");
+let c=0;
+
+function show(){sections.forEach((s,i)=>s.classList.toggle("active",i===c));}
+function next(){if(c<sections.length-1)c++;show();}
+function back(){if(c>0)c--;show();}
+
+/* VALIDATION */
+function v2(){
+if(!cc_discord.value||!cc_discordid.value||!cc_roblox.value||!cc_time.value||!cc_age.value||!cc_proof.value){
+cc_e2.innerText="Fill all fields";return;
+}
+cc_e2.innerText="";next();
+}
+
+function v3(){
+if(!cc_timezone.value||!cc_robloxact.value||!cc_discordact.value||!cc_device.value||!cc_grammar.value){
+cc_e3.innerText="Fill all fields";return;
+}
+cc_e3.innerText="";next();
+}
+
+function v4(){
+if(!cc_words.value||!cc_exp.value||!cc_mic.value||!cc_why.value||!cc_standout.value||!cc_strengths.value){
+cc_e4.innerText="Fill all fields";return;
+}
+cc_e4.innerText="";next();
+}
+
+function v5(){
+if(!cc_s1.value||!cc_s2.value||!cc_s3.value||!cc_s4.value){
+cc_e5.innerText="Fill all fields";return;
+}
+cc_e5.innerText="";next();
+}
+
+/* SUBMIT */
+function submit(){
+
+if(!cc_agree1.value||!cc_agree2.value){
+cc_e6.innerText="Complete agreements";return;
+}
+
+let apps=JSON.parse(localStorage.getItem("apps")||"[]");
+
+apps.push({
+role:"Cabin Crew",
+discord:cc_discord.value,
+discordid:cc_discordid.value,
+roblox:cc_roblox.value,
+time:cc_time.value,
+age:cc_age.value,
+proof:cc_proof.value,
+timezone:cc_timezone.value,
+robloxact:cc_robloxact.value,
+discordact:cc_discordact.value,
+device:cc_device.value,
+grammar:cc_grammar.value,
+words:cc_words.value,
+exp:cc_exp.value,
+mic:cc_mic.value,
+why:cc_why.value,
+standout:cc_standout.value,
+strengths:cc_strengths.value,
+s1:cc_s1.value,
+s2:cc_s2.value,
+s3:cc_s3.value,
+s4:cc_s4.value,
+date:new Date().toLocaleString(),
+hidden:false,
+deleted:false
+});
+
+localStorage.setItem("apps",JSON.stringify(apps));
+
+alert("Submitted!");
+location.href="index.html";
+}
+
+</script>
+
+</body>
+</html>
