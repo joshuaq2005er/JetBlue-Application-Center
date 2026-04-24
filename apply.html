@@ -1,17 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>JetBlue Flight Deck Application</title>
+  <title>JetBlue Application</title>
 
   <style>
     body {
       font-family: Arial;
-      background: linear-gradient(135deg, #e6f2ff, #ffffff);
       margin: 0;
+      background: linear-gradient(135deg, #e6f2ff, #ffffff);
+      background-image:
+        radial-gradient(circle at 20% 20%, rgba(0,115,230,0.1) 2px, transparent 2px),
+        radial-gradient(circle at 70% 80%, rgba(0,115,230,0.1) 2px, transparent 2px);
+      background-size: 50px 50px;
     }
 
     .container {
-      width: 800px;
+      width: 750px;
       margin: 40px auto;
     }
 
@@ -19,26 +23,22 @@
       background: #0073e6;
       color: white;
       padding: 20px;
-      border-radius: 10px;
+      border-radius: 12px;
     }
 
     .box {
       background: white;
       margin-top: 20px;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    }
-
-    h2 {
-      color: #0073e6;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
     }
 
     input, textarea, select {
       width: 100%;
       padding: 10px;
       margin: 8px 0;
-      border-radius: 6px;
+      border-radius: 8px;
       border: 1px solid #ccc;
     }
 
@@ -48,24 +48,29 @@
       background: #0073e6;
       color: white;
       border: none;
-      border-radius: 6px;
-      margin-top: 10px;
+      border-radius: 8px;
       cursor: pointer;
     }
 
-    .note {
-      font-size: 13px;
-      color: red;
-    }
-
-    .section {
-      margin-bottom: 25px;
-    }
-
-    label {
+    .role {
       font-weight: bold;
+      margin-bottom: 10px;
     }
 
+    .progress {
+      height: 10px;
+      background: #ddd;
+      border-radius: 5px;
+      overflow: hidden;
+      margin-bottom: 5px;
+    }
+
+    .bar {
+      height: 10px;
+      width: 0%;
+      background: #0073e6;
+      transition: 0.3s;
+    }
   </style>
 </head>
 
@@ -74,133 +79,39 @@
 <div class="container">
 
   <div class="header">
-    <h1>JetBlue Flight Deck Application</h1>
-    <p>Welcome to the JetBlue Flight Deck Application Form!</p>
+    <h1>JetBlue Application</h1>
   </div>
 
   <div class="box">
 
-    <p>
-      This Application is for individuals wanting to serve for JetBlue as a Flight Deck.<br><br>
-      This form should only be used for Flight Deck applications and not anything else.
-    </p>
+    <div class="progress">
+      <div class="bar" id="bar"></div>
+    </div>
+    <p id="percent">Progress: 0%</p>
 
-    <h3>Before You Start</h3>
-    <ul>
-      <li>Age 13+</li>
-      <li>Proficient SPaG (Spelling, Punctuation, Grammar)</li>
-      <li>600+ Minutes in PTFS</li>
-      <li>Air industry experience recommended</li>
-      <li>No use of AI</li>
-      <li>Do not ask about results</li>
-    </ul>
-
-    <p class="note">
-      * Use of AI results in automatic failure
-    </p>
-
-    <hr>
+    <div class="role" id="roleText"></div>
 
     <form onsubmit="save(event)">
 
-      <!-- SECTION 2 -->
-      <div class="section">
-        <h2>Applicant Information</h2>
+      <input placeholder="Discord Username">
+      <input placeholder="Discord ID">
+      <input placeholder="Roblox Username">
+      <input type="number" placeholder="PTFS Flight Time">
 
-        <label>Discord Username</label>
-        <input required>
+      <select>
+        <option>13-15</option>
+        <option>16-17</option>
+        <option>18-20</option>
+        <option>21+</option>
+      </select>
 
-        <label>Discord ID</label>
-        <input required>
+      <textarea placeholder="Why do you want to join?"></textarea>
+      <textarea placeholder="Strengths & Weaknesses"></textarea>
 
-        <label>Roblox Username</label>
-        <input required>
-
-        <label>PTFS Flight Time</label>
-        <input type="number" required>
-
-        <label>Age Group</label>
-        <select required>
-          <option>13-15</option>
-          <option>16-17</option>
-          <option>18-20</option>
-          <option>21+</option>
-        </select>
-      </div>
-
-      <!-- SECTION 3 -->
-      <div class="section">
-        <h2>Activity & Availability</h2>
-
-        <label>Timezone</label>
-        <input>
-
-        <label>Roblox Activity (1-5)</label>
-        <input type="number" min="1" max="5">
-
-        <label>Discord Activity (1-5)</label>
-        <input type="number" min="1" max="5">
-
-        <label>Device Used</label>
-        <select>
-          <option>PC/Desktop</option>
-          <option>Laptop</option>
-          <option>Mobile</option>
-          <option>Console</option>
-          <option>Tablet</option>
-        </select>
-
-        <label>Grammar Rating (1-5)</label>
-        <input type="number" min="1" max="5">
-      </div>
-
-      <!-- SECTION 4 -->
-      <div class="section">
-        <h2>About You</h2>
-
-        <label>3 Words Describing You</label>
-        <input>
-
-        <label>Previous Experience (Yes/No)</label>
-        <select>
-          <option>Yes</option>
-          <option>No</option>
-        </select>
-
-        <label>Do you have a microphone?</label>
-        <select>
-          <option>Yes</option>
-          <option>No</option>
-        </select>
-
-        <label>Why do you want to join JetBlue?</label>
-        <textarea></textarea>
-
-        <label>What makes you stand out?</label>
-        <textarea></textarea>
-
-        <label>Strengths & Weaknesses</label>
-        <textarea></textarea>
-      </div>
-
-      <!-- SECTION 7 -->
-      <div class="section">
-        <h2>Agreements</h2>
-
-        <label>Do you agree to rules?</label>
-        <select>
-          <option>Yes</option>
-          <option>No</option>
-          <option>Maybe</option>
-        </select>
-
-        <label>Do you agree not to leak documents?</label>
-        <select>
-          <option>Yes</option>
-          <option>No</option>
-          <option>Maybe</option>
-        </select>
-      </div>
+      <select>
+        <option>Yes</option>
+        <option>No</option>
+      </select>
 
       <button type="submit">Submit Application</button>
 
@@ -211,21 +122,42 @@
 </div>
 
 <script>
-function save(event) {
-  event.preventDefault();
-  alert("Application submitted!");
+const role = new URLSearchParams(location.search).get("role");
+document.getElementById("roleText").innerText = "Applying for: " + role;
+
+const inputs = document.querySelectorAll("input, textarea, select");
+const bar = document.getElementById("bar");
+const percent = document.getElementById("percent");
+
+function update() {
+  let filled = 0;
+  inputs.forEach(i => {
+    if (i.value) filled++;
+  });
+
+  let p = Math.round((filled / inputs.length) * 100);
+  bar.style.width = p + "%";
+  percent.innerText = "Progress: " + p + "%";
+}
+
+inputs.forEach(i => i.addEventListener("input", update));
+
+function save(e) {
+  e.preventDefault();
 
   let apps = JSON.parse(localStorage.getItem("applications") || "[]");
 
   apps.push({
-    role: "Flight Deck",
-    date: new Date().toLocaleString(),
-    status: "Pending"
+    id: Date.now(),
+    role,
+    status: "Pending",
+    date: new Date().toLocaleString()
   });
 
   localStorage.setItem("applications", JSON.stringify(apps));
 
-  window.location.href = "index.html";
+  alert("Application submitted!");
+  location.href = "index.html";
 }
 </script>
 
