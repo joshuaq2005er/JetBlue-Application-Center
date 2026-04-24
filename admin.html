@@ -17,6 +17,27 @@
       text-align: center;
     }
 
+    .tabs {
+      display: flex;
+      justify-content: center;
+      background: white;
+      padding: 10px;
+      gap: 10px;
+    }
+
+    .tab {
+      padding: 10px 20px;
+      cursor: pointer;
+      border-radius: 8px;
+      background: #eee;
+      font-weight: bold;
+    }
+
+    .active {
+      background: #0073e6;
+      color: white;
+    }
+
     .container {
       width: 90%;
       margin: 20px auto;
@@ -46,6 +67,10 @@
       border: none;
       cursor: pointer;
     }
+
+    .hidden {
+      display: none;
+    }
   </style>
 </head>
 
@@ -55,21 +80,51 @@
   <h1>JetBlue Admin Dashboard</h1>
 </div>
 
-<div class="container" id="list"></div>
+<!-- TABS -->
+<div class="tabs">
+  <div class="tab active" onclick="showTab('status')">Status Control</div>
+  <div class="tab" onclick="showTab('apps')">Applications</div>
+</div>
+
+<!-- STATUS TAB -->
+<div class="container" id="statusTab"></div>
+
+<!-- APPLICATIONS TAB -->
+<div class="container hidden" id="appsTab"></div>
 
 <script>
 
 function safe(v){ return v ? v : "Not provided"; }
 
-function load(){
+function load() {
   let apps = JSON.parse(localStorage.getItem("applications") || "[]");
-  let list = document.getElementById("list");
 
-  list.innerHTML = "";
+  let statusTab = document.getElementById("statusTab");
+  let appsTab = document.getElementById("appsTab");
+
+  statusTab.innerHTML = "";
+  appsTab.innerHTML = "";
 
   apps.forEach(app => {
 
-    list.innerHTML += `
+    // ================= STATUS TAB =================
+    statusTab.innerHTML += `
+      <div class="card">
+        <div><span class="label">Role:</span> ${safe(app.role)}</div>
+        <div><span class="label">Status:</span> ${safe(app.status)}</div>
+
+        <select onchange="update(${app.id}, this.value)">
+          <option ${app.status==="Pending"?"selected":""}>Pending</option>
+          <option ${app.status==="Accepted"?"selected":""}>Accepted</option>
+          <option ${app.status==="Denied"?"selected":""}>Denied</option>
+        </select>
+
+        <button onclick="del(${app.id})">Delete</button>
+      </div>
+    `;
+
+    // ================= APPLICATION VIEW TAB =================
+    appsTab.innerHTML += `
       <div class="card">
 
         <div><span class="label">Role:</span> ${safe(app.role)}</div>
@@ -84,19 +139,9 @@ function load(){
 
         <hr>
 
-        <div><span class="label">Why:</span><br>${safe(app.why)}</div>
+        <div><span class="label">Why they applied:</span><br>${safe(app.why)}</div>
         <br>
         <div><span class="label">Strengths:</span><br>${safe(app.strengths)}</div>
-
-        <hr>
-
-        <select onchange="update(${app.id}, this.value)">
-          <option ${app.status==="Pending"?"selected":""}>Pending</option>
-          <option ${app.status==="Accepted"?"selected":""}>Accepted</option>
-          <option ${app.status==="Denied"?"selected":""}>Denied</option>
-        </select>
-
-        <button onclick="del(${app.id})">Delete</button>
 
       </div>
     `;
@@ -122,6 +167,24 @@ function del(id){
 
   localStorage.setItem("applications", JSON.stringify(apps));
   load();
+}
+
+// TAB SWITCHING
+function showTab(tab){
+  document.getElementById("statusTab").classList.add("hidden");
+  document.getElementById("appsTab").classList.add("hidden");
+
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+
+  if(tab === "status"){
+    document.getElementById("statusTab").classList.remove("hidden");
+    document.querySelectorAll(".tab")[0].classList.add("active");
+  }
+
+  if(tab === "apps"){
+    document.getElementById("appsTab").classList.remove("hidden");
+    document.querySelectorAll(".tab")[1].classList.add("active");
+  }
 }
 
 load();
