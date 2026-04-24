@@ -22,10 +22,7 @@ border-radius:18px;
 box-shadow:0 10px 30px rgba(0,0,0,0.08);
 }
 
-h2{
-text-align:center;
-color:#0073e6;
-}
+h2{text-align:center;color:#0073e6;}
 
 .section{display:none;}
 .active{display:block;}
@@ -45,11 +42,6 @@ color:white;
 border:none;
 border-radius:12px;
 cursor:pointer;
-}
-
-.nav{
-display:flex;
-justify-content:space-between;
 }
 
 .error{color:red;font-size:13px;}
@@ -78,32 +70,32 @@ document.body.innerHTML="<h1 style='color:red;text-align:center;margin-top:100px
 throw new Error();
 }
 
-/* FORM */
 document.getElementById("form").innerHTML=`
 
+<!-- SECTION 1 -->
 <div class="section active">
-<h3>Section 1 of 6</h3>
-<pre style="white-space:pre-wrap;font-family:Arial">
+<h3>Section 1</h3>
 
+<pre style="white-space:pre-wrap;font-family:Arial;line-height:1.4">
 JetBlue Cabin Crew Application
 
-- No AI usage
-- Must be 13+
-- Follow all rules
-
+No AI allowed.
+Failure = blacklist.
 </pre>
+
 <button onclick="next()">Continue</button>
 </div>
 
+<!-- SECTION 2 -->
 <div class="section">
-<h3>Section 2</h3>
+<h3>Section 2 - Applicant Information</h3>
 
-<input id="cc_discord" placeholder="Discord username *">
-<input id="cc_discordid" placeholder="Discord ID *">
-<input id="cc_roblox" placeholder="Roblox username *">
-<input id="cc_time" placeholder="PTFS time *">
+<input id="discord" placeholder="Discord username *">
+<input id="discordid" placeholder="Discord ID *">
+<input id="roblox" placeholder="Roblox username *">
+<input id="time" placeholder="PTFS time *">
 
-<select id="cc_age">
+<select id="age">
 <option value="">Age *</option>
 <option>13-15</option>
 <option>16-17</option>
@@ -111,85 +103,80 @@ JetBlue Cabin Crew Application
 <option>21+</option>
 </select>
 
-<input id="cc_proof" placeholder="Proof link *">
+<input id="proof" placeholder="Outfit proof link *">
 
-<div class="error" id="cc_e2"></div>
-
+<div class="error" id="e2"></div>
 <button onclick="v2()">Next</button>
 </div>
 
+<!-- SECTION 3 -->
 <div class="section">
 <h3>Section 3 - Activity</h3>
 
-<input id="cc_timezone" placeholder="Timezone *">
-<input id="cc_robloxact" placeholder="Roblox activity 1-5 *">
-<input id="cc_discordact" placeholder="Discord activity 1-5 *">
-<input id="cc_device" placeholder="Device *">
-<input id="cc_grammar" placeholder="Grammar 1-5 *">
+<input id="timezone" placeholder="Timezone *">
+<input id="robloxact" placeholder="Roblox activity 1-5 *">
+<input id="discordact" placeholder="Discord activity 1-5 *">
+<input id="device" placeholder="Device *">
+<input id="grammar" placeholder="Grammar 1-5 *">
 
-<div class="error" id="cc_e3"></div>
-
+<div class="error" id="e3"></div>
 <button onclick="v3()">Next</button>
 </div>
 
+<!-- SECTION 4 -->
 <div class="section">
 <h3>Section 4 - About You</h3>
 
-<textarea id="cc_words" placeholder="3 words *"></textarea>
+<textarea id="words" placeholder="3 words *"></textarea>
 
-<select id="cc_exp">
+<select id="exp">
 <option value="">Experience *</option>
 <option>Yes</option>
 <option>No</option>
 </select>
 
-<select id="cc_mic">
+<select id="mic">
 <option value="">Mic *</option>
 <option>Yes</option>
 <option>No</option>
 </select>
 
-<textarea id="cc_why" placeholder="Why JetBlue? *"></textarea>
-<textarea id="cc_standout" placeholder="Stand out? *"></textarea>
-<textarea id="cc_strengths" placeholder="Strengths/Weaknesses *"></textarea>
+<textarea id="why" placeholder="Why JetBlue? *"></textarea>
+<textarea id="standout" placeholder="Stand out? *"></textarea>
+<textarea id="strengths" placeholder="Strengths & Weaknesses *"></textarea>
 
-<div class="error" id="cc_e4"></div>
-
+<div class="error" id="e4"></div>
 <button onclick="v4()">Next</button>
 </div>
 
+<!-- SECTION 5 -->
 <div class="section">
 <h3>Section 5 - Cabin Crew Questions</h3>
 
-<textarea id="cc_s1" placeholder="Job during cruise? *"></textarea>
-<textarea id="cc_s2" placeholder="Passenger request? *"></textarea>
-<textarea id="cc_s3" placeholder="Disturbance? *"></textarea>
-<textarea id="cc_s4" placeholder="Emergency role? *"></textarea>
+<textarea id="s1" placeholder="Once the plane is cruising, what would your job be as a caterer? *"></textarea>
+<textarea id="s2" placeholder="If a passenger asks for something you don't serve, what would you do? *"></textarea>
+<textarea id="s3" placeholder="If a passenger is causing disturbance, what should you do? *"></textarea>
+<textarea id="s4" placeholder="During an emergency, what is your role? *"></textarea>
 
-<div class="error" id="cc_e5"></div>
-
+<div class="error" id="e5"></div>
 <button onclick="v5()">Next</button>
 </div>
 
+<!-- SECTION 6 -->
 <div class="section">
 <h3>Section 6 - Agreements</h3>
 
-<select id="cc_agree1">
-<option value="">Leak rules? *</option>
-<option>Yes</option>
-<option>No</option>
-<option>Maybe</option>
+<select id="agree1">
+<option value="">Do you agree to not leak ANY documents?*</option>
+<option>Yes</option><option>No</option><option>Maybe</option>
 </select>
 
-<select id="cc_agree2">
-<option value="">Follow rules? *</option>
-<option>Yes</option>
-<option>No</option>
-<option>Maybe</option>
+<select id="agree2">
+<option value="">Do you agree to follow all rules as Cabin Crew?*</option>
+<option>Yes</option><option>No</option><option>Maybe</option>
 </select>
 
-<div class="error" id="cc_e6"></div>
-
+<div class="error" id="e6"></div>
 <button onclick="submit()">Submit</button>
 </div>
 
@@ -203,66 +190,49 @@ function next(){if(c<sections.length-1)c++;show();}
 function back(){if(c>0)c--;show();}
 
 /* VALIDATION */
-function v2(){
-if(!cc_discord.value||!cc_discordid.value||!cc_roblox.value||!cc_time.value||!cc_age.value||!cc_proof.value){
-cc_e2.innerText="Fill all fields";return;
-}
-cc_e2.innerText="";next();
-}
-
-function v3(){
-if(!cc_timezone.value||!cc_robloxact.value||!cc_discordact.value||!cc_device.value||!cc_grammar.value){
-cc_e3.innerText="Fill all fields";return;
-}
-cc_e3.innerText="";next();
-}
-
-function v4(){
-if(!cc_words.value||!cc_exp.value||!cc_mic.value||!cc_why.value||!cc_standout.value||!cc_strengths.value){
-cc_e4.innerText="Fill all fields";return;
-}
-cc_e4.innerText="";next();
-}
-
-function v5(){
-if(!cc_s1.value||!cc_s2.value||!cc_s3.value||!cc_s4.value){
-cc_e5.innerText="Fill all fields";return;
-}
-cc_e5.innerText="";next();
-}
+function v2(){if(!discord.value||!discordid.value||!roblox.value||!time.value||!age.value||!proof.value){e2.innerText="Fill all fields";return;}e2.innerText="";next();}
+function v3(){if(!timezone.value||!robloxact.value||!discordact.value||!device.value||!grammar.value){e3.innerText="Fill all fields";return;}e3.innerText="";next();}
+function v4(){if(!words.value||!exp.value||!mic.value||!why.value||!standout.value||!strengths.value){e4.innerText="Fill all fields";return;}e4.innerText="";next();}
+function v5(){if(!s1.value||!s2.value||!s3.value||!s4.value){e5.innerText="Fill all fields";return;}e5.innerText="";next();}
 
 /* SUBMIT */
 function submit(){
 
-if(!cc_agree1.value||!cc_agree2.value){
-cc_e6.innerText="Complete agreements";return;
-}
+if(!agree1.value||!agree2.value){e6.innerText="Complete agreements";return;}
 
 let apps=JSON.parse(localStorage.getItem("apps")||"[]");
 
 apps.push({
 role:"Cabin Crew",
-discord:cc_discord.value,
-discordid:cc_discordid.value,
-roblox:cc_roblox.value,
-time:cc_time.value,
-age:cc_age.value,
-proof:cc_proof.value,
-timezone:cc_timezone.value,
-robloxact:cc_robloxact.value,
-discordact:cc_discordact.value,
-device:cc_device.value,
-grammar:cc_grammar.value,
-words:cc_words.value,
-exp:cc_exp.value,
-mic:cc_mic.value,
-why:cc_why.value,
-standout:cc_standout.value,
-strengths:cc_strengths.value,
-s1:cc_s1.value,
-s2:cc_s2.value,
-s3:cc_s3.value,
-s4:cc_s4.value,
+
+discord:discord.value,
+discordid:discordid.value,
+roblox:roblox.value,
+time:time.value,
+age:age.value,
+proof:proof.value,
+
+timezone:timezone.value,
+robloxact:robloxact.value,
+discordact:discordact.value,
+device:device.value,
+grammar:grammar.value,
+
+words:words.value,
+exp:exp.value,
+mic:mic.value,
+why:why.value,
+standout:standout.value,
+strengths:strengths.value,
+
+s1:s1.value,
+s2:s2.value,
+s3:s3.value,
+s4:s4.value,
+
+agree1:agree1.value,
+agree2:agree2.value,
+
 date:new Date().toLocaleString(),
 hidden:false,
 deleted:false
