@@ -4,67 +4,18 @@
   <title>JetBlue Application</title>
 
   <style>
-    body {
-      font-family: Arial;
-      margin: 0;
-      background: #eef6ff;
-    }
-
-    .container {
-      width: 750px;
-      margin: 40px auto;
-    }
-
-    .header {
-      background: #0073e6;
-      color: white;
-      padding: 20px;
-      border-radius: 12px;
-    }
-
-    .box {
-      background: white;
-      margin-top: 20px;
-      padding: 25px;
-      border-radius: 12px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-    }
+    body { font-family: Arial; background:#eef6ff; margin:0; }
+    .container { width:750px; margin:40px auto; }
+    .box { background:white; padding:20px; border-radius:10px; }
 
     input, textarea, select {
-      width: 100%;
-      padding: 10px;
-      margin: 8px 0;
-      border-radius: 8px;
-      border: 1px solid #ccc;
+      width:100%; padding:10px; margin:8px 0;
     }
 
     button {
-      width: 100%;
-      padding: 12px;
-      background: #0073e6;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    .progress {
-      height: 10px;
-      background: #ddd;
-      border-radius: 5px;
-      overflow: hidden;
-    }
-
-    .bar {
-      height: 10px;
-      width: 0%;
-      background: #0073e6;
-      transition: 0.3s;
-    }
-
-    .role {
-      font-weight: bold;
-      margin-bottom: 10px;
+      width:100%; padding:12px;
+      background:#0073e6; color:white;
+      border:none;
     }
   </style>
 </head>
@@ -73,80 +24,43 @@
 
 <div class="container">
 
-  <div class="header">
-    <h1>JetBlue Application</h1>
-  </div>
+<div class="box">
 
-  <div class="box">
+<h2 id="roleTitle"></h2>
 
-    <div class="progress">
-      <div class="bar" id="bar"></div>
-    </div>
+<form onsubmit="submitApp(event)">
 
-    <p id="percent">Progress: 0%</p>
+<input id="discord" placeholder="Discord Username">
+<input id="roblox" placeholder="Roblox Username">
+<input id="time" type="number" placeholder="PTFS Flight Time">
 
-    <div class="role" id="roleText"></div>
+<textarea id="why" placeholder="Why do you want to join?"></textarea>
+<textarea id="strengths" placeholder="Strengths & Weaknesses"></textarea>
 
-    <form onsubmit="save(event)">
+<select id="agree">
+  <option>Yes</option>
+  <option>No</option>
+</select>
 
-      <input placeholder="Discord Username">
-      <input placeholder="Discord ID">
-      <input placeholder="Roblox Username">
-      <input type="number" placeholder="PTFS Flight Time">
+<button>Submit</button>
 
-      <select>
-        <option>13-15</option>
-        <option>16-17</option>
-        <option>18-20</option>
-        <option>21+</option>
-      </select>
+</form>
 
-      <textarea placeholder="Why do you want to join?"></textarea>
-      <textarea placeholder="Strengths & Weaknesses"></textarea>
-
-      <select>
-        <option>Yes</option>
-        <option>No</option>
-      </select>
-
-      <button type="submit">Submit Application</button>
-
-    </form>
-
-  </div>
+</div>
 
 </div>
 
 <script>
 
 const params = new URLSearchParams(window.location.search);
-let role = params.get("role");
 
-// FIX: always ensure correct role
-if (!role) role = "Flight Deck";
+const role = params.get("role");
+const status = params.get("status");
 
-document.getElementById("roleText").innerText = "Applying for: " + role;
+document.getElementById("roleTitle").innerText =
+"Applying for: " + role + " (" + status.toUpperCase() + ")";
 
-// Progress bar
-const inputs = document.querySelectorAll("input, textarea, select");
-const bar = document.getElementById("bar");
-const percent = document.getElementById("percent");
-
-function update() {
-  let filled = 0;
-  inputs.forEach(i => {
-    if (i.value) filled++;
-  });
-
-  let p = Math.round((filled / inputs.length) * 100);
-  bar.style.width = p + "%";
-  percent.innerText = "Progress: " + p + "%";
-}
-
-inputs.forEach(i => i.addEventListener("input", update));
-
-// Save
-function save(e) {
+function submitApp(e){
   e.preventDefault();
 
   let apps = JSON.parse(localStorage.getItem("applications") || "[]");
@@ -155,12 +69,20 @@ function save(e) {
     id: Date.now(),
     role,
     status: "Pending",
+
+    discord: discord.value,
+    roblox: roblox.value,
+    time: time.value,
+    why: why.value,
+    strengths: strengths.value,
+    agree: agree.value,
+
     date: new Date().toLocaleString()
   });
 
   localStorage.setItem("applications", JSON.stringify(apps));
 
-  alert("Application submitted!");
+  alert("Submitted!");
   location.href = "index.html";
 }
 
