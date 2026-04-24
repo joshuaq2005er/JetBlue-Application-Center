@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>JetBlue Admin Dashboard</title>
+<title>JetBlue Admin Panel</title>
 
 <style>
 body{
@@ -51,7 +51,7 @@ box-shadow:0 5px 15px rgba(0,0,0,0.08);
 
 button{
 padding:6px 10px;
-margin-top:6px;
+margin-top:5px;
 border:none;
 cursor:pointer;
 border-radius:6px;
@@ -62,7 +62,7 @@ border-radius:6px;
 <body>
 
 <div class="header">
-<h2>JetBlue Admin Panel</h2>
+<h2>JetBlue Admin Dashboard</h2>
 </div>
 
 <div class="tabs">
@@ -77,8 +77,9 @@ border-radius:6px;
 
 <script>
 
-/* ================= LOGIN ================= */
+/* ================= PASSWORD ================= */
 let pass = prompt("Admin Password:");
+
 if(pass !== "JB123478JBC"){
 document.body.innerHTML = "<h1 style='color:red;text-align:center;margin-top:100px'>ACCESS DENIED</h1>";
 throw new Error();
@@ -107,25 +108,25 @@ load();
 function hide(i){
 let apps = get("apps");
 
-if(apps[i]){
+if(!apps[i]) return;
+
 apps[i].hidden = !apps[i].hidden;
 save();
 load();
 }
-}
 
-/* ================= DELETE (ONLY FROM APPS) ================= */
+/* ================= DELETE (SOFT DELETE) ================= */
 function del(i){
 let apps = get("apps");
 
-if(apps[i]){
+if(!apps[i]) return;
+
 apps[i].deleted = true;
 save();
 load();
 }
-}
 
-/* ================= LOAD ================= */
+/* ================= LOAD ALL DATA ================= */
 function load(){
 
 let roles = ["Flight Deck","Cabin Crew","Ground Crew"];
@@ -163,20 +164,24 @@ apps.forEach((a,i)=>{
 if(a.deleted) return;
 
 appsDiv.innerHTML += `
-<div class="card" style="opacity:${a.hidden?0.4:1}">
+<div class="card" style="opacity:${a.hidden ? 0.4 : 1}">
 
-<h3>${a.role}</h3>
+<h3>${a.role || "Unknown Role"}</h3>
 
-<b>Discord:</b> ${a.discord || ""}<br>
-<b>Roblox:</b> ${a.roblox || ""}<br>
-<b>Date:</b> ${a.date || ""}<br><br>
+<b>Discord:</b> ${a.discord || "-"}<br>
+<b>Roblox:</b> ${a.roblox || "-"}<br>
+<b>Date:</b> ${a.date || "-"}<br>
 
-<b>WHY:</b><br>${a.why || ""}<br><br>
+<hr>
 
-<b>FLIGHT:</b><br>
-Flaps: ${a.flaps || ""}<br>
-VFR: ${a.vfr || ""}<br>
-ILS: ${a.ils || ""}<br>
+<b>WHY:</b><br>${a.why || "-"}<br><br>
+
+<b>Flight Knowledge:</b><br>
+Flaps: ${a.flaps || "-"}<br>
+VFR: ${a.vfr || "-"}<br>
+ILS: ${a.ils || "-"}<br>
+
+<hr>
 
 <button onclick="hide(${i})">
 ${a.hidden ? "Unhide" : "Hide"}
@@ -191,7 +196,7 @@ Delete
 });
 }
 
-/* ===== HISTORY (NEVER DELETED) ===== */
+/* ===== HISTORY (IMMUTABLE) ===== */
 let history = get("history");
 
 if(history.length === 0){
@@ -201,10 +206,10 @@ historyDiv.innerHTML = "<div class='card'>No history yet</div>";
 history.forEach(h=>{
 historyDiv.innerHTML += `
 <div class="card">
-<b>${h.role}</b><br>
-${h.discord || ""}<br>
-${h.roblox || ""}<br>
-${h.date || ""}
+<b>${h.role || "-"}</b><br>
+${h.discord || "-"}<br>
+${h.roblox || "-"}<br>
+${h.date || "-"}
 </div>
 `;
 });
@@ -212,7 +217,7 @@ ${h.date || ""}
 
 }
 
-/* ================= TABS ================= */
+/* ================= TAB SWITCH ================= */
 function show(i){
 
 ["status","apps","history"].forEach((id,j)=>{
