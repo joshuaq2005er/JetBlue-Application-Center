@@ -1,57 +1,41 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>JetBlue Airways Careers</title>
+  <title>JetBlue Careers</title>
 
   <style>
     body {
       margin: 0;
       font-family: Arial;
       background: linear-gradient(135deg, #d9efff, #ffffff);
-      background-image:
-        radial-gradient(circle at 10% 20%, rgba(0,115,230,0.08) 2px, transparent 2px),
-        radial-gradient(circle at 80% 60%, rgba(0,115,230,0.08) 2px, transparent 2px);
-      background-size: 60px 60px;
     }
 
     .header {
       text-align: center;
-      padding: 60px 20px 20px;
+      padding: 50px;
     }
 
     h1 {
       color: #0073e6;
-      font-size: 42px;
-    }
-
-    p {
-      max-width: 850px;
-      margin: auto;
-      color: #444;
     }
 
     .grid {
       display: flex;
-      flex-wrap: wrap;
       justify-content: center;
+      flex-wrap: wrap;
       gap: 20px;
-      padding: 40px;
+      padding: 30px;
     }
 
     .card {
-      width: 270px;
+      width: 280px;
       background: white;
-      padding: 18px;
-      border-radius: 14px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      padding: 15px;
+      border-radius: 12px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
       text-decoration: none;
       color: black;
-      border-top: 4px solid #0073e6;
-      transition: 0.3s;
-    }
-
-    .card:hover {
-      transform: translateY(-6px);
+      position: relative;
     }
 
     .title {
@@ -59,41 +43,63 @@
       font-weight: bold;
       font-size: 18px;
     }
+
+    .badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      color: white;
+    }
+
+    .open {
+      background: green;
+    }
+
+    .closed {
+      background: red;
+    }
   </style>
 </head>
 
 <body>
 
 <div class="header">
-  <h1>JetBlue Airways Careers</h1>
-  <p>Select a position below to begin your application.</p>
+  <h1>JetBlue Careers</h1>
 </div>
 
 <div class="grid">
 
-  <a class="card" href="apply.html?role=Flight%20Deck">
+  <a class="card" href="apply.html?role=Flight%20Deck&status=open">
+    <div class="badge open">OPEN</div>
     <div class="title">Flight Deck</div>
-    <p>Take the reigns and lead the way to unlimited destinations.</p>
+    Take the reigns and lead the way.
   </a>
 
-  <a class="card" href="apply.html?role=Cabin%20Crew">
+  <a class="card" href="apply.html?role=Cabin%20Crew&status=open">
+    <div class="badge open">OPEN</div>
     <div class="title">Cabin Crew</div>
-    <p>Provide comfort and hospitality to passengers.</p>
+    Provide comfort and hospitality.
   </a>
 
-  <a class="card" href="apply.html?role=Ground%20Crew">
+  <a class="card" href="apply.html?role=Ground%20Crew&status=closed">
+    <div class="badge closed">CLOSED</div>
     <div class="title">Ground Crew</div>
-    <p>Ensure safety and readiness of aircraft operations.</p>
+    Ensure aircraft safety.
   </a>
 
-  <a class="card" href="apply.html?role=Flight%20Operations">
+  <a class="card" href="apply.html?role=Flight%20Operations&status=open">
+    <div class="badge open">OPEN</div>
     <div class="title">Flight Operations</div>
-    <p>Manage and coordinate flight systems.</p>
+    Manage flight systems.
   </a>
 
-  <a class="card" href="apply.html?role=Human%20Resources">
+  <a class="card" href="apply.html?role=Human%20Resources&status=open">
+    <div class="badge open">OPEN</div>
     <div class="title">Human Resources</div>
-    <p>Handle recruitment and internal staff operations.</p>
+    Manage staff recruitment.
   </a>
 
 </div>
