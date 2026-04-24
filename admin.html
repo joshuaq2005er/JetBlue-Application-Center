@@ -28,7 +28,7 @@ padding:10px 15px;
 margin:5px;
 background:#eee;
 cursor:pointer;
-border-radius:6px;
+border-radius:8px;
 }
 
 .active{
@@ -39,24 +39,22 @@ color:white;
 .container{
 width:90%;
 margin:auto;
-padding-top:10px;
 }
 
 .card{
 background:white;
 padding:15px;
 margin:10px 0;
-border-radius:10px;
-box-shadow:0 4px 10px rgba(0,0,0,0.08);
+border-radius:12px;
+box-shadow:0 5px 15px rgba(0,0,0,0.08);
 }
 
 button{
 padding:6px 10px;
-background:#0073e6;
-color:white;
+margin-top:6px;
 border:none;
 cursor:pointer;
-margin-top:5px;
+border-radius:6px;
 }
 </style>
 </head>
@@ -64,127 +62,149 @@ margin-top:5px;
 <body>
 
 <div class="header">
-<h2>JetBlue Admin Dashboard</h2>
+<h2>JetBlue Admin Panel</h2>
 </div>
 
 <div class="tabs">
-<div class="tab active" onclick="showTab(0)">Status</div>
-<div class="tab" onclick="showTab(1)">Applications</div>
-<div class="tab" onclick="showTab(2)">History</div>
+<div class="tab active" onclick="show(0)">Status</div>
+<div class="tab" onclick="show(1)">Applications</div>
+<div class="tab" onclick="show(2)">History</div>
 </div>
 
-<div class="container" id="statusTab"></div>
-<div class="container" id="appsTab" style="display:none;"></div>
-<div class="container" id="historyTab" style="display:none;"></div>
+<div class="container" id="status"></div>
+<div class="container" id="apps" style="display:none;"></div>
+<div class="container" id="history" style="display:none;"></div>
 
 <script>
 
 /* ================= LOGIN ================= */
 let pass = prompt("Admin Password:");
-if(pass !== "1234"){
-document.body.innerHTML = "<h1 style='color:red;text-align:center;margin-top:100px;'>ACCESS DENIED</h1>";
+if(pass !== "JB123478JBC"){
+document.body.innerHTML = "<h1 style='color:red;text-align:center;margin-top:100px'>ACCESS DENIED</h1>";
 throw new Error();
 }
 
-/* ================= DATA ================= */
+/* ================= SAFE GET ================= */
 function get(key){
 return JSON.parse(localStorage.getItem(key) || "[]");
 }
 
-/* ================= STATUS ================= */
+/* ================= SAVE ================= */
+function save(){
+localStorage.setItem("apps", JSON.stringify(get("apps")));
+}
+
+/* ================= STATUS TOGGLE ================= */
 function toggle(role){
-let current = localStorage.getItem("role_" + role) || "OPEN";
-let newStatus = current === "OPEN" ? "CLOSED" : "OPEN";
-localStorage.setItem("role_" + role, newStatus);
+let key = "roleStatus_" + role;
+let current = localStorage.getItem(key) || "OPEN";
+
+localStorage.setItem(key, current === "OPEN" ? "CLOSED" : "OPEN");
 load();
+}
+
+/* ================= HIDE / UNHIDE ================= */
+function hide(i){
+let apps = get("apps");
+
+if(apps[i]){
+apps[i].hidden = !apps[i].hidden;
+save();
+load();
+}
+}
+
+/* ================= DELETE (ONLY FROM APPS) ================= */
+function del(i){
+let apps = get("apps");
+
+if(apps[i]){
+apps[i].deleted = true;
+save();
+load();
+}
 }
 
 /* ================= LOAD ================= */
 function load(){
 
-const statusTab = document.getElementById("statusTab");
-const appsTab = document.getElementById("appsTab");
-const historyTab = document.getElementById("historyTab");
-
-statusTab.innerHTML = "";
-appsTab.innerHTML = "";
-historyTab.innerHTML = "";
-
-/* ROLES */
 let roles = ["Flight Deck","Cabin Crew","Ground Crew"];
 
-roles.forEach(role=>{
-let status = localStorage.getItem("role_" + role) || "OPEN";
+let statusDiv = document.getElementById("status");
+let appsDiv = document.getElementById("apps");
+let historyDiv = document.getElementById("history");
 
-statusTab.innerHTML += `
+statusDiv.innerHTML = "";
+appsDiv.innerHTML = "";
+historyDiv.innerHTML = "";
+
+/* ===== STATUS ===== */
+roles.forEach(r=>{
+let s = localStorage.getItem("roleStatus_" + r) || "OPEN";
+
+statusDiv.innerHTML += `
 <div class="card">
-<b>${role}</b><br>
-Status: ${status}<br>
-<button onclick="toggle('${role}')">Toggle OPEN/CLOSED</button>
+<b>${r}</b><br>
+Status: <b style="color:${s==='OPEN'?'green':'red'}">${s}</b><br>
+<button onclick="toggle('${r}')">Toggle</button>
 </div>
 `;
 });
 
-/* APPLICATIONS (FULL ANSWERS) */
+/* ===== APPLICATIONS ===== */
 let apps = get("apps");
 
 if(apps.length === 0){
-appsTab.innerHTML = "<div class='card'>No applications yet</div>";
+appsDiv.innerHTML = "<div class='card'>No applications yet</div>";
 } else {
 
-apps.forEach(a=>{
-appsTab.innerHTML += `
-<div class="card">
+apps.forEach((a,i)=>{
+
+if(a.deleted) return;
+
+appsDiv.innerHTML += `
+<div class="card" style="opacity:${a.hidden?0.4:1}">
 
 <h3>${a.role}</h3>
 
 <b>Discord:</b> ${a.discord || ""}<br>
-<b>Discord ID:</b> ${a.discordid || ""}<br>
 <b>Roblox:</b> ${a.roblox || ""}<br>
-<b>Time:</b> ${a.time || ""}<br>
-<b>Age:</b> ${a.age || ""}<br>
-<b>Date:</b> ${a.date || ""}<br>
+<b>Date:</b> ${a.date || ""}<br><br>
 
-<hr>
+<b>WHY:</b><br>${a.why || ""}<br><br>
 
-<b>WHY APPLY:</b><br>${a.why || ""}<br><br>
-
-<b>STRENGTHS:</b><br>${a.strengths || ""}<br><br>
-
-<hr>
-
-<b>FLIGHT QUESTIONS</b><br>
+<b>FLIGHT:</b><br>
 Flaps: ${a.flaps || ""}<br>
-VFR/IFR: ${a.vfr || ""}<br>
+VFR: ${a.vfr || ""}<br>
 ILS: ${a.ils || ""}<br>
-Chart: ${a.chart || ""}<br>
-Callouts: ${a.callouts || ""}<br>
-Flight Plan: ${a.plan || ""}<br><br>
 
-<b>SCENARIOS</b><br>
-Disturbance: ${a.disturb || ""}<br>
-Fire: ${a.fire || ""}<br>
-Trolls: ${a.trolls || ""}
+<button onclick="hide(${i})">
+${a.hidden ? "Unhide" : "Hide"}
+</button>
+
+<button onclick="del(${i})" style="background:red;color:white;">
+Delete
+</button>
 
 </div>
 `;
 });
 }
 
-/* HISTORY */
+/* ===== HISTORY (NEVER DELETED) ===== */
 let history = get("history");
 
 if(history.length === 0){
-historyTab.innerHTML = "<div class='card'>No history yet</div>";
+historyDiv.innerHTML = "<div class='card'>No history yet</div>";
 } else {
 
-history.forEach(a=>{
-historyTab.innerHTML += `
+history.forEach(h=>{
+historyDiv.innerHTML += `
 <div class="card">
-<b>${a.role}</b><br>
-${a.discord || ""}<br>
-${a.roblox || ""}<br>
-${a.date || ""}
+<b>${h.role}</b><br>
+${h.discord || ""}<br>
+${h.roblox || ""}<br>
+${h.date || ""}
 </div>
 `;
 });
@@ -193,15 +213,14 @@ ${a.date || ""}
 }
 
 /* ================= TABS ================= */
-function showTab(i){
+function show(i){
 
-document.getElementById("statusTab").style.display = i===0 ? "block" : "none";
-document.getElementById("appsTab").style.display = i===1 ? "block" : "none";
-document.getElementById("historyTab").style.display = i===2 ? "block" : "none";
+["status","apps","history"].forEach((id,j)=>{
+document.getElementById(id).style.display = (j===i) ? "block" : "none";
+});
 
-document.querySelectorAll(".tab").forEach((t,index)=>{
-t.classList.remove("active");
-if(index===i)t.classList.add("active");
+document.querySelectorAll(".tab").forEach((t,j)=>{
+t.classList.toggle("active", j===i);
 });
 
 }
