@@ -77,7 +77,6 @@ font-size:13px;
 
 let role="Cabin Crew";
 
-/* STATUS CHECK */
 let status=localStorage.getItem("roleStatus_"+role)||"OPEN";
 
 if(status==="CLOSED"){
@@ -85,10 +84,8 @@ document.body.innerHTML="<h1 style='color:red;text-align:center;margin-top:100px
 throw new Error();
 }
 
-/* FORM */
 document.getElementById("form").innerHTML=`
 
-<!-- SECTION 1 -->
 <div class="section active">
 
 <h3>Section 1 of 6</h3>
@@ -122,8 +119,8 @@ Good Luck!
 
 </div>
 
-<!-- SECTION 2 -->
 <div class="section">
+
 <h3>Section 2 of 6 - Applicant Information</h3>
 
 <input id="ccdiscord" placeholder="What is your discord username? *">
@@ -140,7 +137,6 @@ Good Luck!
 <option>Other</option>
 </select>
 
-
 <div class="error" id="e2"></div>
 
 <div class="nav">
@@ -149,7 +145,6 @@ Good Luck!
 </div>
 </div>
 
-<!-- SECTION 3 -->
 <div class="section">
 <h3>Section 3 of 6 - Activity</h3>
 
@@ -167,11 +162,10 @@ Good Luck!
 </div>
 </div>
 
-<!-- SECTION 4 -->
 <div class="section">
 <h3>Section 4 of 6 - About You</h3>
 
-<textarea id="ccwords" placeholder="Describe yourself and what you enjoy doing (2+ sentences required).
+<textarea id="ccwords" placeholder="Describe yourself and what you enjoy doing (2+ sentences required)."></textarea>
 
 <select id="ccexp">
 <option value="">Do you have any experience as Cabin Crew in any PTC groups? *</option>
@@ -191,14 +185,13 @@ Good Luck!
 </div>
 </div>
 
-<!-- SECTION 5 -->
 <div class="section">
 <h3>Section 5 of 6 - Scenarios</h3>
 
 <textarea id="ccs1" placeholder="Once the plane is cruising, what would your job be as a caterer? *"></textarea>
 <textarea id="ccs2" placeholder="If a passenger asks for something that you don't serve, what would be your reaction? *"></textarea>
 <textarea id="ccs3" placeholder="If a passenger is causing a disturbance to other passengers, what should you do? *"></textarea>
-<textarea id="ccs3" placeholder="During an emergency, what do you think your primary role would be to do? *"></textarea>
+<textarea id="ccs4" placeholder="During an emergency, what do you think your primary role would be to do? *"></textarea>
 
 <div class="error" id="e6"></div>
 
@@ -208,7 +201,6 @@ Good Luck!
 </div>
 </div>
 
-<!-- SECTION 6 -->
 <div class="section">
 <h3>Section 6 of 6 - Agreements</h3>
 
@@ -242,44 +234,37 @@ function back(){if(c>0)c--;show();}
 
 /* VALIDATION */
 function v2(){
-if(!discord.value||!discordid.value||!roblox.value||!time.value||!age.value||!proof.value){
+if(!ccdiscord.value||!ccdiscordid.value||!ccroblox.value||!cctime.value||!ccage.value){
 e2.innerText="Fill all fields";return;
 }
 e2.innerText="";next();
 }
 
 function v3(){
-if(!timezone.value||!robloxact.value||!discordact.value||!device.value||!grammar.value){
+if(!cctimezone.value||!ccrobloxact.value||!ccdiscordact.value||!ccdevice.value||!ccgrammar.value){
 e3.innerText="Fill all fields";return;
 }
 e3.innerText="";next();
 }
 
 function v4(){
-if(!words.value||!exp.value||!mic.value||!why.value||!standout.value||!strengths.value){
+if(!ccwords.value||!ccexp.value||!ccwhy.value||!ccstandout.value||!ccstrengths.value){
 e4.innerText="Fill all fields";return;
 }
 e4.innerText="";next();
 }
 
-function v5(){
-if(!flaps.value||!vfr.value||!ils.value||!chart.value||!callouts.value||!flightplan.value){
-e5.innerText="Fill all fields";return;
-}
-e5.innerText="";next();
-}
-
 function v6(){
-if(!s1.value||!s2.value||!s3.value){
+if(!ccs1.value||!ccs2.value||!ccs3.value||!ccs4.value){
 e6.innerText="Fill all fields";return;
 }
 e6.innerText="";next();
 }
 
-/* SUBMIT */
+/* SUBMIT FIXED */
 function submit(){
 
-if(!agree1.value||!agree2.value){
+if(!ccagree1.value||!ccagree2.value){
 e7.innerText="Complete agreements";return;
 }
 
@@ -287,15 +272,30 @@ let apps=JSON.parse(localStorage.getItem("apps")||"[]");
 
 apps.push({
 role,
-ccdiscord:ccdiscord.value,
-ccdiscordid:ccdiscordid.value,
-ccroblox:ccroblox.value,
-cctime:cctime.value,
-ccage:ccage.value,
-ccwhy:ccwhy.value,
-ccs1:ccs1.value,
-ccs2:ccs2.value,
-ccs3:ccs3.value,
+
+discord:ccdiscord.value,
+discordid:ccdiscordid.value,
+roblox:ccroblox.value,
+time:cctime.value,
+age:ccage.value,
+
+timezone:cctimezone.value,
+robloxact:ccrobloxact.value,
+discordact:ccdiscordact.value,
+device:ccdevice.value,
+grammar:ccgrammar.value,
+
+words:ccwords.value,
+exp:ccexp.value,
+why:ccwhy.value,
+standout:ccstandout.value,
+strengths:ccstrengths.value,
+
+s1:ccs1.value,
+s2:ccs2.value,
+s3:ccs3.value,
+s4:ccs4.value,
+
 date:new Date().toLocaleString(),
 hidden:false,
 deleted:false
@@ -310,7 +310,7 @@ localStorage.setItem("history",JSON.stringify(history));
 alert("Submitted!");
 location.href="index.html";
 }
-  
+
 </script>
 
 </body>
