@@ -7,25 +7,28 @@
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #e6f2ff, #ffffff);
-      background-image: radial-gradient(#cce6ff 1px, transparent 1px);
-      background-size: 20px 20px;
+      background: linear-gradient(135deg, #d9efff, #ffffff);
+      background-image:
+        radial-gradient(circle at 10% 20%, rgba(0,115,230,0.08) 2px, transparent 2px),
+        radial-gradient(circle at 80% 60%, rgba(0,115,230,0.08) 2px, transparent 2px);
+      background-size: 60px 60px;
     }
 
-    .container {
-      padding: 60px 20px;
+    .header {
       text-align: center;
+      padding: 60px 20px 20px;
     }
 
     h1 {
       color: #0073e6;
-      font-size: 40px;
+      font-size: 42px;
     }
 
     p {
-      color: #444;
-      max-width: 800px;
+      max-width: 850px;
       margin: auto;
+      color: #444;
+      line-height: 1.5;
     }
 
     .grid {
@@ -33,79 +36,73 @@
       flex-wrap: wrap;
       justify-content: center;
       gap: 20px;
-      margin-top: 40px;
+      padding: 40px;
     }
 
     .card {
+      width: 270px;
       background: white;
-      width: 260px;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-      text-align: left;
-      transition: 0.3s;
-      cursor: pointer;
+      padding: 18px;
+      border-radius: 14px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
       text-decoration: none;
       color: black;
+      transition: 0.3s;
+      border-top: 4px solid #0073e6;
     }
 
     .card:hover {
-      transform: translateY(-5px);
+      transform: translateY(-6px);
     }
 
     .title {
       color: #0073e6;
       font-size: 18px;
       font-weight: bold;
+      margin-bottom: 6px;
     }
-
   </style>
-
 </head>
 
 <body>
 
-<div class="container">
-
+<div class="header">
   <h1>JetBlue Airways Careers</h1>
 
   <p>
     JetBlue Airways offers a variety of career choices. From operating directly on the flight deck,
     to serving passengers in the cabin; JetBlue has something for you!
+    <br><br>
+    Ready to join the family? Explore the options below and see what suits you best.
   </p>
+</div>
 
-  <p>
-    Ready to join the family? Explore the options below and see what suits you best!
-  </p>
+<div class="grid">
 
-  <div class="grid">
+  <a class="card" href="apply.html?role=Flight%20Deck">
+    <div class="title">Flight Deck</div>
+    <p>Take the reigns and lead the way to unlimited destinations.</p>
+  </a>
 
-    <a class="card" href="apply.html?role=Flight%20Deck">
-      <div class="title">Flight Deck</div>
-      <p>Take control of the plane and lead the way to countless destinations.</p>
-    </a>
+  <a class="card" href="apply.html?role=Cabin%20Crew">
+    <div class="title">Cabin Crew</div>
+    <p>Provide the utmost comfort and hospitality to our highly valued passengers.</p>
+  </a>
 
-    <a class="card" href="apply.html?role=Cabin%20Crew">
-      <div class="title">Cabin Crew</div>
-      <p>Provide comfort and hospitality to our valued passengers.</p>
-    </a>
+  <a class="card" href="apply.html?role=Ground%20Crew">
+    <div class="title">Ground Crew</div>
+    <p>Ensure the safety and readiness of the aircraft, through thorough operations and procedures.</p>
+  </a>
 
-    <a class="card" href="apply.html?role=Ground%20Crew">
-      <div class="title">Ground Crew</div>
-      <p>Ensure safety and readiness of aircraft through operations.</p>
-    </a>
+  <a class="card" href="apply.html?role=Flight%20Operations">
+    <div class="title">Flight Operations</div>
+    <p>Host and manage flights with coordination and precision.</p>
+  </a>
 
-    <a class="card" href="apply.html?role=Flight%20Operations">
-      <div class="title">Flight Operations</div>
-      <p>Host and manage flights and operations efficiently.</p>
-    </a>
-
-    <a class="card" href="apply.html?role=Human%20Resources">
-      <div class="title">Human Resources</div>
-      <p>Handle staff coordination and internal operations.</p>
-    </a>
-
-  </div>
+  <a class="card" href="apply.html?role=Human%20Resources">
+    <div class="title">Human Resources</div>
+    <p>Handle tickets and step into a moderation role within JetBlue operations.</p>
+  </a>
 
 </div>
 
