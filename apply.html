@@ -4,18 +4,67 @@
   <title>JetBlue Application</title>
 
   <style>
-    body { font-family: Arial; background:#eef6ff; margin:0; }
-    .container { width:750px; margin:40px auto; }
-    .box { background:white; padding:20px; border-radius:10px; }
+    body {
+      font-family: Arial;
+      margin: 0;
+      background: #eef6ff;
+    }
+
+    .container {
+      width: 750px;
+      margin: 40px auto;
+    }
+
+    .header {
+      background: #0073e6;
+      color: white;
+      padding: 20px;
+      border-radius: 12px;
+    }
+
+    .box {
+      background: white;
+      margin-top: 20px;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    }
 
     input, textarea, select {
-      width:100%; padding:10px; margin:8px 0;
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
     }
 
     button {
-      width:100%; padding:12px;
-      background:#0073e6; color:white;
-      border:none;
+      width: 100%;
+      padding: 12px;
+      background: #0073e6;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .bar {
+      height: 10px;
+      background: #ddd;
+      border-radius: 5px;
+      overflow: hidden;
+      margin-bottom: 5px;
+    }
+
+    .fill {
+      height: 10px;
+      width: 0%;
+      background: #0073e6;
+    }
+
+    .role {
+      font-weight: bold;
+      margin-bottom: 10px;
     }
   </style>
 </head>
@@ -24,9 +73,16 @@
 
 <div class="container">
 
+<div class="header">
+  <h1>JetBlue Application</h1>
+</div>
+
 <div class="box">
 
-<h2 id="roleTitle"></h2>
+<div class="bar"><div class="fill" id="fill"></div></div>
+<p id="progress">Progress: 0%</p>
+
+<div class="role" id="roleText"></div>
 
 <form onsubmit="submitApp(event)">
 
@@ -54,12 +110,29 @@
 
 const params = new URLSearchParams(window.location.search);
 
-const role = params.get("role");
-const status = params.get("status");
+let role = params.get("role") || "Flight Deck";
+let status = params.get("status") || "OPEN";
 
-document.getElementById("roleTitle").innerText =
-"Applying for: " + role + " (" + status.toUpperCase() + ")";
+document.getElementById("roleText").innerText =
+"Applying for: " + role + " (" + status + ")";
 
+// progress
+const inputs = document.querySelectorAll("input, textarea, select");
+const fill = document.getElementById("fill");
+const progress = document.getElementById("progress");
+
+function update(){
+  let count = 0;
+  inputs.forEach(i => { if(i.value) count++; });
+
+  let p = Math.round((count / inputs.length) * 100);
+  fill.style.width = p + "%";
+  progress.innerText = "Progress: " + p + "%";
+}
+
+inputs.forEach(i => i.addEventListener("input", update));
+
+// submit
 function submitApp(e){
   e.preventDefault();
 
@@ -82,7 +155,7 @@ function submitApp(e){
 
   localStorage.setItem("applications", JSON.stringify(apps));
 
-  alert("Submitted!");
+  alert("Application submitted!");
   location.href = "index.html";
 }
 
