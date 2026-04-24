@@ -7,11 +7,7 @@
     body {
       font-family: Arial;
       margin: 0;
-      background: linear-gradient(135deg, #e6f2ff, #ffffff);
-      background-image:
-        radial-gradient(circle at 20% 20%, rgba(0,115,230,0.1) 2px, transparent 2px),
-        radial-gradient(circle at 70% 80%, rgba(0,115,230,0.1) 2px, transparent 2px);
-      background-size: 50px 50px;
+      background: #eef6ff;
     }
 
     .container {
@@ -52,17 +48,11 @@
       cursor: pointer;
     }
 
-    .role {
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-
     .progress {
       height: 10px;
       background: #ddd;
       border-radius: 5px;
       overflow: hidden;
-      margin-bottom: 5px;
     }
 
     .bar {
@@ -70,6 +60,11 @@
       width: 0%;
       background: #0073e6;
       transition: 0.3s;
+    }
+
+    .role {
+      font-weight: bold;
+      margin-bottom: 10px;
     }
   </style>
 </head>
@@ -87,6 +82,7 @@
     <div class="progress">
       <div class="bar" id="bar"></div>
     </div>
+
     <p id="percent">Progress: 0%</p>
 
     <div class="role" id="roleText"></div>
@@ -122,9 +118,16 @@
 </div>
 
 <script>
-const role = new URLSearchParams(location.search).get("role");
+
+const params = new URLSearchParams(window.location.search);
+let role = params.get("role");
+
+// FIX: always ensure correct role
+if (!role) role = "Flight Deck";
+
 document.getElementById("roleText").innerText = "Applying for: " + role;
 
+// Progress bar
 const inputs = document.querySelectorAll("input, textarea, select");
 const bar = document.getElementById("bar");
 const percent = document.getElementById("percent");
@@ -142,6 +145,7 @@ function update() {
 
 inputs.forEach(i => i.addEventListener("input", update));
 
+// Save
 function save(e) {
   e.preventDefault();
 
@@ -159,6 +163,7 @@ function save(e) {
   alert("Application submitted!");
   location.href = "index.html";
 }
+
 </script>
 
 </body>
