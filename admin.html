@@ -1,1 +1,314 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>JetBlue Admin Dashboard</title>
+
+<style>
+body{
+margin:0;
+font-family:Arial;
+background:#eef6ff;
+}
+
+.header{
+background:#0073e6;
+color:white;
+padding:20px;
+text-align:center;
+}
+
+.tabs{
+display:flex;
+justify-content:center;
+background:white;
+}
+
+.tab{
+padding:10px 15px;
+margin:5px;
+cursor:pointer;
+background:#eee;
+border-radius:8px;
+}
+
+.active{
+background:#0073e6;
+color:white;
+}
+
+.container{
+width:90%;
+margin:auto;
+}
+
+.card{
+background:white;
+padding:15px;
+margin:10px 0;
+border-radius:12px;
+box-shadow:0 5px 15px rgba(0,0,0,0.08);
+}
+
+button{
+padding:6px 10px;
+margin:5px;
+border:none;
+border-radius:6px;
+cursor:pointer;
+}
+
+/* MODAL */
+#modal{
+display:none;
+position:fixed;
+top:0;left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.6);
+z-index:999;
+}
+
+#modalBox{
+background:white;
+width:650px;
+margin:60px auto;
+padding:20px;
+border-radius:12px;
+max-height:80vh;
+overflow:auto;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+<h2>JetBlue Admin Dashboard</h2>
+</div>
+
+<div class="tabs">
+<div class="tab active" onclick="showTab(0)">Status</div>
+<div class="tab" onclick="showTab(1)">Applications</div>
+<div class="tab" onclick="showTab(2)">History</div>
+</div>
+
+<div class="container">
+
+<div id="status"></div>
+<div id="apps" style="display:none;"></div>
+<div id="history" style="display:none;"></div>
+
+</div>
+
+<!-- MODAL -->
+<div id="modal">
+<div id="modalBox">
+<h3>Application Details</h3>
+<div id="modalContent"></div>
+<button onclick="closeModal()">Close</button>
+</div>
+</div>
+
+<script>
+
+/* PASSWORD */
+let pass = prompt("Admin Password:");
+
+if(pass !== "JB123478JBC"){
+document.body.innerHTML = "<h1 style='color:red;text-align:center;margin-top:100px'>ACCESS DENIED</h1>";
+throw new Error();
+}
+
+/* STORAGE */
+function get(key){
+return JSON.parse(localStorage.getItem(key) || "[]");
+}
+
+/* STATUS */
+function getStatus(role){
+let s = localStorage.getItem("roleStatus_"+role);
+if(!s){
+localStorage.setItem("roleStatus_"+role,"OPEN");
+return "OPEN";
+}
+return s;
+}
+
+function toggleStatus(role){
+let s = getStatus(role);
+localStorage.setItem("roleStatus_"+role, s==="OPEN"?"CLOSED":"OPEN");
+load();
+}
+
+/* HIDE */
+function hideApp(i){
+if(!confirm("Hide this application?")) return;
+
+let apps=get("apps");
+apps[i].hidden=!apps[i].hidden;
+localStorage.setItem("apps",JSON.stringify(apps));
+load();
+}
+
+/* DELETE */
+function deleteApp(i){
+if(!confirm("Delete this application?")) return;
+
+let apps=get("apps");
+apps[i].deleted=true;
+localStorage.setItem("apps",JSON.stringify(apps));
+load();
+}
+
+/* MODAL FIXED */
+function showMore(i){
+let a=get("apps")[i];
+
+document.getElementById("modalContent").innerHTML=`
+
+<b>Role:</b> ${a.role}<br><br>
+
+<hr>
+
+<b>Applicant Information:</b><br>
+Discord Username: ${a.discord}<br>
+Discord ID: ${a.discordid}<br>
+Roblox Username: ${a.roblox}<br>
+PTFS flight time: ${a.time}<br>
+Age Group: ${a.age}<br><br>
+
+<hr>
+
+<b>Activity:</b><br>
+Timezone: ${a.timezone}<br>
+Roblox Activity: ${a.robloxact}<br>
+Discord Activity: ${a.discordact}<br>
+Device: ${a.device}<br>
+Grammar: ${a.grammar}<br><br>
+
+<hr>
+
+<b>About:</b><br>
+${a.words}<br><br>
+
+Experience: ${a.exp}<br>
+Why JetBlue: ${a.why}<br>
+Standout: ${a.standout}<br>
+Strengths/Weaknesses: ${a.strengths}<br><br>
+
+<hr>
+
+<b>Scenarios:</b><br>
+1: ${a.s1}<br>
+2: ${a.s2}<br>
+3: ${a.s3}<br>
+4: ${a.s4}<br><br>
+
+<hr>
+
+<b>Agreements:</b><br>
+Leak Agreement: ${a.agree1}<br>
+Rules Agreement: ${a.agree2}<br>
+
+`;
+
+document.getElementById("modal").style.display="block";
+}
+
+function closeModal(){
+document.getElementById("modal").style.display="none";
+}
+
+/* LOAD */
+function load(){
+
+let roles=["Flight Deck","Cabin Crew","Ground Crew"];
+
+let statusDiv=document.getElementById("status");
+let appsDiv=document.getElementById("apps");
+let historyDiv=document.getElementById("history");
+
+statusDiv.innerHTML="";
+appsDiv.innerHTML="";
+historyDiv.innerHTML="";
+
+/* STATUS */
+roles.forEach(r=>{
+let s=getStatus(r);
+
+statusDiv.innerHTML+=`
+<div class="card">
+<b>${r}</b><br>
+Status: <b style="color:${s==='OPEN'?'green':'red'}">${s}</b><br>
+<button onclick="toggleStatus('${r}')">Toggle</button>
+</div>
+`;
+});
+
+/* APPLICATIONS */
+let apps=get("apps");
+
+apps.forEach((a,i)=>{
+if(a.deleted) return;
+
+appsDiv.innerHTML+=`
+<div class="card" style="opacity:${a.hidden?0.5:1}">
+
+<h3>${a.role}</h3>
+
+<b>Discord:</b> ${a.discord}<br>
+<b>Roblox:</b> ${a.roblox}<br>
+<b>Date:</b> ${a.date}<br>
+
+<button onclick="hideApp(${i})">
+${a.hidden?"Unhide":"Hide"} Application
+</button>
+
+<button onclick="deleteApp(${i})" style="background:red;color:white;">
+Delete Application
+</button>
+
+<button onclick="showMore(${i})" style="background:#0073e6;color:white;">
+Show More
+</button>
+
+</div>
+`;
+});
+
+/* HISTORY */
+let history=get("history")||[];
+
+history.forEach(h=>{
+historyDiv.innerHTML+=`
+<div class="card">
+<b>${h.role}</b><br>
+${h.discord}<br>
+${h.roblox}<br>
+${h.date}
+</div>
+`;
+});
+
+}
+
+/* TABS */
+function showTab(i){
+
+["status","apps","history"].forEach((id,j)=>{
+document.getElementById(id).style.display=(i===j)?"block":"none";
+});
+
+document.querySelectorAll(".tab").forEach((t,j)=>{
+t.classList.toggle("active",i===j);
+});
+
+}
+
+load();
+
+</script>
+
+</body>
+</html>
 
