@@ -173,19 +173,19 @@ document.getElementById("modalContent").innerHTML=`
 <b>Role:</b> ${a.role}<br><br>
 
 <b>Applicant Information:</b><br>
-<b>Discord Username:</b> ${a.discord}<br>
-<b>Discord ID:</b> ${a.discordid}<br>
-<b>Roblox Username:</b> ${a.roblox}<br>
-<b>PTFS minutes:</b> ${a.time}<br>
-<b>Age Group:</b> ${a.age}<br>
+<b>Discord Username:</b> ${a.ccdiscord}<br>
+<b>Discord ID:</b> ${a.ccdiscordid}<br>
+<b>Roblox Username:</b> ${a.ccroblox}<br>
+<b>PTFS minutes:</b> ${a.cctime}<br>
+<b>Age Group:</b> ${a.ccage}<br>
 <b>Outfit Picker Proof:</b> ${a.proof}<br><br>
 
 <hr>
 
 <b>Activity and Availability:</b><br>
-Timezone:</b> ${a.timezone}<br>
-Roblox Activity out of 5:</b> ${a.robloxact}<br>
-Discord activity out of 5:</b> ${a.discordact}<br>
+Timezone:</b> ${a.cctimezone}<br>
+Roblox Activity out of 5:</b> ${a.ccrobloxact}<br>
+Discord activity out of 5:</b> ${a.ccdiscordact}<br>
 Device:</b> ${a.device}<br><br>
 
 <hr>
@@ -197,14 +197,6 @@ Working Mic:${a.mic}<br>
 Why does he want to work at JetBlue? (2 sentences required): ${a.why}<br>
 What makes him stand out over other applicants? (2+ sentences required): ${a.standout}<br>
 Weaknesses And Wtrengths? (2+ each): ${a.strengths}<br><br>
-
-<b>Flight Knowledge:</b><br>
-Explain when to retract flaps.: ${a.flaps}<br>
-Explain what VFR and IFR mean.: ${a.vfr}<br>
-What does ILS stand for and when is it used?: ${a.ils}<br>
-What is the point of a airport chart?: ${a.chart}<br>
-Choose the appropriate callouts needed during the takeoff roll.: ${a.callouts}<br>
-What is a flight plan and why are they crucial?: ${a.flightplan}<br><br>
 
 <hr>
 
