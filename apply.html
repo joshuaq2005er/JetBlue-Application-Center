@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>JetBlue Application</title>
+<title>JetBlue Flight Deck Application</title>
 
 <style>
 body{
@@ -53,6 +53,12 @@ margin-top:10px;
 display:flex;
 justify-content:space-between;
 }
+
+.error{
+color:red;
+font-size:13px;
+margin-top:5px;
+}
 </style>
 </head>
 
@@ -61,7 +67,7 @@ justify-content:space-between;
 <div class="container">
 <div class="card">
 
-<h2 id="title">Application</h2>
+<h2 id="title"></h2>
 
 <div id="form"></div>
 
@@ -70,101 +76,158 @@ justify-content:space-between;
 
 <script>
 
-/* ================= ROLE ================= */
 let role = new URLSearchParams(location.search).get("role") || "Flight Deck";
 
-/* ================= STATUS CHECK ================= */
-let status = localStorage.getItem("roleStatus_" + role) || "OPEN";
+/* STATUS CHECK */
+let status = localStorage.getItem("roleStatus_"+role) || "OPEN";
 
 if(status === "CLOSED"){
 document.body.innerHTML = `
 <div style="text-align:center;margin-top:150px;font-family:Arial;">
-<h1 style="color:red;">🚫 ${role} Applications Closed</h1>
-<p>Please check back later.</p>
-
+<h1 style="color:red;">🚫 ${role} CLOSED</h1>
+<p>Applications are not available right now.</p>
 <button onclick="location.href='index.html'"
 style="padding:10px 20px;background:#0073e6;color:white;border:none;border-radius:10px;">
-Go Back
+Back
 </button>
-</div>
-`;
-throw new Error("CLOSED");
+</div>`;
+throw new Error();
 }
 
 document.getElementById("title").innerText = role + " Application";
 
-/* ================= FORM ================= */
+/* FORM */
 document.getElementById("form").innerHTML = `
 
 <!-- SECTION 1 -->
 <div class="section active">
-<h3>Welcome</h3>
-<p>You are applying for: <b>${role}</b></p>
-<button onclick="next()">Start</button>
+<h3>Section 1 of 7</h3>
+
+<p><b>JetBlue Flight Deck Application</b></p>
+
+<p>Welcome to the JetBlue Flight Deck Application Form!</p>
+
+<p>This Application is for individuals wanting to serve for JetBlue as a Flight Deck.</p>
+
+<p>Before You Start:</p>
+<ul>
+<li>Age 13+</li>
+<li>SPaG Required</li>
+<li>600+ PTFS Minutes</li>
+<li>No AI allowed</li>
+</ul>
+
+<button onclick="next()">Continue</button>
 </div>
 
 <!-- SECTION 2 -->
 <div class="section">
-<h3>Applicant Info</h3>
+<h3>Section 2 of 7 - Applicant Information</h3>
 
 <input id="discord" placeholder="Discord Username">
+<input id="discordid" placeholder="Discord ID">
 <input id="roblox" placeholder="Roblox Username">
 <input id="time" placeholder="PTFS Flight Time">
 
+<div id="err2" class="error"></div>
+
 <div class="nav">
 <button onclick="back()">Back</button>
-<button onclick="next()">Next</button>
+<button onclick="validate2()">Next</button>
 </div>
 </div>
 
 <!-- SECTION 3 -->
 <div class="section">
-<h3>About You</h3>
+<h3>Section 3 of 7 - Activity</h3>
 
-<textarea id="why" placeholder="Why do you want to join?"></textarea>
-<textarea id="strengths" placeholder="Strengths / Weaknesses"></textarea>
+<input id="timezone" placeholder="Timezone">
+<input id="robloxact" placeholder="Roblox Activity 1-5">
+<input id="discordact" placeholder="Discord Activity 1-5">
+
+<div id="err3" class="error"></div>
 
 <div class="nav">
 <button onclick="back()">Back</button>
-<button onclick="next()">Next</button>
+<button onclick="validate3()">Next</button>
 </div>
 </div>
 
 <!-- SECTION 4 -->
 <div class="section">
-<h3>Flight Knowledge</h3>
+<h3>Section 4 of 7 - About You</h3>
 
-<textarea id="flaps" placeholder="When to retract flaps"></textarea>
-<textarea id="vfr" placeholder="VFR / IFR meaning"></textarea>
-<textarea id="ils" placeholder="What is ILS"></textarea>
+<textarea id="why" placeholder="Why do you want to join?"></textarea>
+
+<div id="err4" class="error"></div>
 
 <div class="nav">
 <button onclick="back()">Back</button>
-<button onclick="next()">Next</button>
+<button onclick="validate4()">Next</button>
 </div>
 </div>
 
 <!-- SECTION 5 -->
 <div class="section">
-<h3>Submit</h3>
+<h3>Section 5 of 7 - Flight Knowledge</h3>
+
+<textarea id="flaps" placeholder="When to retract flaps"></textarea>
+<textarea id="vfr" placeholder="VFR / IFR"></textarea>
+<textarea id="ils" placeholder="ILS meaning"></textarea>
+
+<div id="err5" class="error"></div>
+
+<div class="nav">
+<button onclick="back()">Back</button>
+<button onclick="validate5()">Next</button>
+</div>
+</div>
+
+<!-- SECTION 6 -->
+<div class="section">
+<h3>Section 6 of 7 - Scenarios</h3>
+
+<textarea id="fire"></textarea>
+
+<div id="err6" class="error"></div>
+
+<div class="nav">
+<button onclick="back()">Back</button>
+<button onclick="validate6()">Next</button>
+</div>
+</div>
+
+<!-- SECTION 7 -->
+<div class="section">
+<h3>Section 7 of 7 - Agreements</h3>
+
+<select id="agree1">
+<option value="">Select</option>
+<option>Yes</option><option>No</option><option>Maybe</option>
+</select>
+
+<select id="agree2">
+<option value="">Select</option>
+<option>Yes</option><option>No</option><option>Maybe</option>
+</select>
+
+<div id="err7" class="error"></div>
 
 <button onclick="submit()">Submit Application</button>
 
 <div class="nav">
 <button onclick="back()">Back</button>
 </div>
+
 </div>
 
 `;
 
-/* ================= NAVIGATION ================= */
 let sections = document.querySelectorAll(".section");
 let current = 0;
 
 function show(){
-sections.forEach((s,i)=>{
-s.classList.toggle("active", i===current);
-});
+sections.forEach((s,i)=>s.classList.toggle("active",i===current));
 }
 
 function next(){
@@ -177,31 +240,82 @@ if(current > 0) current--;
 show();
 }
 
+/* ================= VALIDATION SYSTEM ================= */
+
+function validate2(){
+if(!discord.value || !roblox.value || !time.value){
+err2.innerText="Please fill all fields.";
+return;
+}
+err2.innerText="";
+next();
+}
+
+function validate3(){
+if(!timezone.value || !robloxact.value || !discordact.value){
+err3.innerText="Complete all activity fields.";
+return;
+}
+err3.innerText="";
+next();
+}
+
+function validate4(){
+if(!why.value){
+err4.innerText="Answer required.";
+return;
+}
+err4.innerText="";
+next();
+}
+
+function validate5(){
+if(!flaps.value || !vfr.value || !ils.value){
+err5.innerText="Complete flight knowledge.";
+return;
+}
+err5.innerText="";
+next();
+}
+
+function validate6(){
+if(!fire.value){
+err6.innerText="Answer scenario.";
+return;
+}
+err6.innerText="";
+next();
+}
+
 /* ================= SUBMIT ================= */
 function submit(){
 
-let apps = JSON.parse(localStorage.getItem("apps") || "[]");
+if(!agree1.value || !agree2.value){
+err7.innerText="You must complete agreements.";
+return;
+}
+
+let apps = JSON.parse(localStorage.getItem("apps")||"[]");
 
 apps.push({
-role:role,
-discord:discord.value || "",
-roblox:roblox.value || "",
-time:time.value || "",
-why:why.value || "",
-strengths:strengths.value || "",
-flaps:flaps.value || "",
-vfr:vfr.value || "",
-ils:ils.value || "",
+role,
+discord:discord.value,
+roblox:roblox.value,
+time:time.value,
+why:why.value,
+flaps:flaps.value,
+vfr:vfr.value,
+ils:ils.value,
 date:new Date().toLocaleString(),
 hidden:false,
 deleted:false
 });
 
-localStorage.setItem("apps", JSON.stringify(apps));
+localStorage.setItem("apps",JSON.stringify(apps));
 
-let history = JSON.parse(localStorage.getItem("history") || "[]");
+let history = JSON.parse(localStorage.getItem("history")||"[]");
 history.push(apps[apps.length-1]);
-localStorage.setItem("history", JSON.stringify(history));
+localStorage.setItem("history",JSON.stringify(history));
 
 alert("Application Submitted!");
 location.href="index.html";
