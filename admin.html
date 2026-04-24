@@ -1,1 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Dashboard</title>
 
+  <style>
+    body {
+      font-family: Arial;
+      background: #eef5ff;
+      text-align: center;
+    }
+
+    .box {
+      width: 90%;
+      margin: 30px auto;
+    }
+
+    .card {
+      background: white;
+      margin: 10px;
+      padding: 15px;
+      border-radius: 10px;
+      text-align: left;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      color: #0073e6;
+    }
+
+    select, button {
+      margin-top: 10px;
+      padding: 6px;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    .status {
+      font-weight: bold;
+    }
+
+  </style>
+</head>
+
+<body>
+
+<h1>Admin Dashboard</h1>
+
+<div class="box" id="list"></div>
+
+<script>
+
+function loadApps() {
+  let apps = JSON.parse(localStorage.getItem("applications") || "[]");
+
+  let list = document.getElementById("list");
+  list.innerHTML = "";
+
+  apps.forEach((app, index) => {
+
+    list.innerHTML += `
+      <div class="card">
+        <div class="row">
+          <div>
+            <b>Role:</b> ${app.role}<br>
+            <b>Name:</b> ${app.name}<br>
+            <b>Email:</b> ${app.email}<br>
+            <b>Date:</b> ${app.date}<br>
+            <div class="status">Status: ${app.status}</div>
+          </div>
+        </div>
+
+        <p>${app.message}</p>
+
+        <select onchange="updateStatus(${app.id}, this.value)">
+          <option value="Pending" ${app.status==="Pending"?"selected":""}>Pending</option>
+          <option value="Reviewed" ${app.status==="Reviewed"?"selected":""}>Reviewed</option>
+          <option value="Closed" ${app.status==="Closed"?"selected":""}>Closed</option>
+        </select>
+
+        <button onclick="deleteApp(${app.id})">Delete</button>
+      </div>
+    `;
+  });
+}
+
+function updateStatus(id, status) {
+  let apps = JSON.parse(localStorage.getItem("applications") || "[]");
+
+  apps = apps.map(app => {
+    if (app.id === id) {
+      app.status = status;
+    }
+    return app;
+  });
+
+  localStorage.setItem("applications", JSON.stringify(apps));
+  loadApps();
+}
+
+function deleteApp(id) {
+  let apps = JSON.parse(localStorage.getItem("applications") || "[]");
+
+  apps = apps.filter(app => app.id !== id);
+
+  localStorage.setItem("applications", JSON.stringify(apps));
+  loadApps();
+}
+
+loadApps();
+
+</script>
+
+</body>
+</html>
