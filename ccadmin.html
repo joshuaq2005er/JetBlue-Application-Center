@@ -57,7 +57,6 @@ border-radius:6px;
 cursor:pointer;
 }
 
-/* MODAL */
 #modal{
 display:none;
 position:fixed;
@@ -100,7 +99,6 @@ overflow:auto;
 
 </div>
 
-<!-- MODAL -->
 <div id="modal">
 <div id="modalBox">
 <h3>Application Details</h3>
@@ -111,27 +109,18 @@ overflow:auto;
 
 <script>
 
-/* ================= PASSWORD ================= */
 let pass = prompt("Admin Password:");
-
 if(pass !== "JB123478JBCC"){
-document.body.innerHTML = "<h1 style='color:red;text-align:center;margin-top:100px'>ACCESS DENIED</h1>";
+document.body.innerHTML="<h1 style='color:red;text-align:center;margin-top:100px'>ACCESS DENIED</h1>";
 throw new Error();
 }
 
-/* ================= SAFE STORAGE ================= */
 function get(key){
-return JSON.parse(localStorage.getItem(key) || "[]");
+return JSON.parse(localStorage.getItem(key)||"[]");
 }
 
-/* ================= SAVE ================= */
-function save(){
-localStorage.setItem("apps", JSON.stringify(get("apps")));
-}
-
-/* ================= STATUS ================= */
 function getStatus(role){
-let s = localStorage.getItem("roleStatus_"+role);
+let s=localStorage.getItem("roleStatus_"+role);
 if(!s){
 localStorage.setItem("roleStatus_"+role,"OPEN");
 return "OPEN";
@@ -140,76 +129,70 @@ return s;
 }
 
 function toggleStatus(role){
-let s = getStatus(role);
-localStorage.setItem("roleStatus_"+role, s==="OPEN"?"CLOSED":"OPEN");
+let s=getStatus(role);
+localStorage.setItem("roleStatus_"+role,s==="OPEN"?"CLOSED":"OPEN");
 load();
 }
 
-/* ================= HIDE ================= */
 function hideApp(i){
-if(!confirm("Hide this application?")) return;
-
 let apps=get("apps");
 apps[i].hidden=!apps[i].hidden;
 localStorage.setItem("apps",JSON.stringify(apps));
 load();
 }
 
-/* ================= DELETE ================= */
 function deleteApp(i){
-if(!confirm("Delete this application?")) return;
-
 let apps=get("apps");
 apps[i].deleted=true;
 localStorage.setItem("apps",JSON.stringify(apps));
 load();
 }
 
-/* ================= SHOW MORE ================= */
 function showMore(i){
 let a=get("apps")[i];
 
 document.getElementById("modalContent").innerHTML=`
+
 <b>Role:</b> ${a.role}<br><br>
 
-<b>Applicant Information:</b><br>
-<b>Discord Username:</b> ${a.ccdiscord}<br>
-<b>Discord ID:</b> ${a.ccdiscordid}<br>
-<b>Roblox Username:</b> ${a.ccroblox}<br>
-<b>PTFS minutes:</b> ${a.cctime}<br>
-<b>Age Group:</b> ${a.ccage}<br>
-<b>Outfit Picker Proof:</b> ${a.ccproof}<br><br>
+<b>Discord:</b> ${a.ccdiscord}<br>
+<b>ID:</b> ${a.ccdiscordid}<br>
+<b>Roblox:</b> ${a.ccroblox}<br>
+<b>Time:</b> ${a.cctime}<br>
+<b>Age:</b> ${a.ccage}<br><br>
 
 <hr>
 
-<b>Activity and Availability:</b><br>
-Timezone:</b> ${a.cctimezone}<br>
-Roblox Activity out of 5:</b> ${a.ccrobloxact}<br>
-Discord activity out of 5:</b> ${a.ccdiscordact}<br>
-Device:</b> ${a.ccdevice}<br><br>
+<b>Activity:</b><br>
+<b>Timezone:</b>${a.cctimezone}<br>
+<b>Roblox Active (/5):</b>${a.ccrobloxact}<br>
+<b>Discord Active (/5):</b>${a.ccdiscordact}<br>
+<b>Device:</b>${a.ccdevice}<br>
+<b>Grammar (/5)</b>${a.ccgrammar}<br><br>
 
 <hr>
 
-<b>Flight-related questions:</b><br>
-Describe yourself and what you enjoy doing (2+ sentences required)?:</b> ${a.ccwords}<br>
-Experience: ${a.ccexp}<br>
-Working Mic:${a.ccmic}<br>
-Why does he want to work at JetBlue? (2 sentences required): ${a.ccwhy}<br>
-What makes him stand out over other applicants? (2+ sentences required): ${a.ccstandout}<br>
-Weaknesses And Wtrengths? (2+ each): ${a.ccstrengths}<br><br>
+<b>About:</b><br>
+<b>Describe yourself and what you enjoy doing (2+ sentences required).</b>${a.ccwords}<br>
+<b>Do you have any experience as Cabin Crew in any PTC groups?</b>${a.ccexp}<br>
+<b>Why do you want to work at JetBlue? (2 sentences required)</b>${a.ccwhy}<br>
+<b>What makes you stand out over other applicants? (2+ sentences required)</b>${a.ccstandout}<br>
+<b>What are your weaknesses and strengths? (2+ each)</b>${a.ccstrengths}<br><br>
 
 <hr>
 
 <b>Scenarios:</b><br>
-Once the plane is cruising, what would your job be as a caterer?: ${a.ccs1}<br>
-If a passenger asks for something that you don't serve, what would be your reaction?: ${a.ccs2}<br>
-If a passenger is causing a disturbance to other passengers, what should you do?: ${a.s3}<br><br>
-During an emergency, what do you think your primary role would be to do?: ${a.s4}<br><br>
+<b>Once the plane is cruising, what would your job be as a caterer?</b>${a.ccs1}<br>
+<b>If a passenger asks for something that you don't serve, what would be your reaction?</b>${a.ccs2}<br>
+<b>If a passenger is causing a disturbance to other passengers, what should you do?</b>${a.ccs3}<br>
+<b>During an emergency, what do you think your primary role would be to do?</b>${a.ccs4}<br><br>
 
 <hr>
+
 <b>Agreements:</b><br>
-Does he agree to not leak ANY documents provided?: ${a.ccagree1}<br>
-Does he agree to follow all rules as a cabin crew if accepted?: ${a.ccagree2}<br><br>
+<b></b>${a.ccagree1}<br>
+<b></b>${a.ccagree2}<br>
+
 `;
 
 document.getElementById("modal").style.display="block";
@@ -219,7 +202,6 @@ function closeModal(){
 document.getElementById("modal").style.display="none";
 }
 
-/* ================= LOAD ================= */
 function load(){
 
 let roles=["Flight Deck","Cabin Crew","Ground Crew"];
@@ -232,7 +214,6 @@ statusDiv.innerHTML="";
 appsDiv.innerHTML="";
 historyDiv.innerHTML="";
 
-/* ===== STATUS TAB ===== */
 roles.forEach(r=>{
 let s=getStatus(r);
 
@@ -245,7 +226,6 @@ Status: <b style="color:${s==='OPEN'?'green':'red'}">${s}</b><br>
 `;
 });
 
-/* ===== APPLICATIONS ===== */
 let apps=get("apps");
 
 apps.forEach((a,i)=>{
@@ -253,38 +233,26 @@ if(a.deleted) return;
 
 appsDiv.innerHTML+=`
 <div class="card" style="opacity:${a.hidden?0.5:1}">
-
 <h3>${a.role}</h3>
+<b>${a.ccdiscord}</b><br>
+<b>${a.ccroblox}</b><br>
+<b>${a.date}</b><br>
 
-<b>Discord:</b> ${a.ccdiscord}<br>
-<b>Roblox:</b> ${a.ccroblox}<br>
-<b>Date:</b> ${a.date}<br>
-
-<button onclick="hideApp(${i})">
-${a.hidden?"Unhide":"Hide"} Application
-</button>
-
-<button onclick="deleteApp(${i})" style="background:red;color:white;">
-Delete Application
-</button>
-
-<button onclick="showMore(${i})" style="background:#0073e6;color:white;">
-Show More
-</button>
-
+<button onclick="hideApp(${i})">${a.hidden?"Unhide":"Hide"}</button>
+<button onclick="deleteApp(${i})" style="background:red;color:white;">Delete</button>
+<button onclick="showMore(${i})" style="background:#0073e6;color:white;">Show More</button>
 </div>
 `;
 });
 
-/* ===== HISTORY ===== */
 let history=get("history")||[];
 
 history.forEach(h=>{
 historyDiv.innerHTML+=`
 <div class="card">
 <b>${h.role}</b><br>
-${h.discord}<br>
-${h.roblox}<br>
+${h.ccdiscord}<br>
+${h.ccroblox}<br>
 ${h.date}
 </div>
 `;
@@ -292,9 +260,7 @@ ${h.date}
 
 }
 
-/* ================= TABS ================= */
 function showTab(i){
-
 ["status","apps","history"].forEach((id,j)=>{
 document.getElementById(id).style.display=(i===j)?"block":"none";
 });
@@ -302,14 +268,10 @@ document.getElementById(id).style.display=(i===j)?"block":"none";
 document.querySelectorAll(".tab").forEach((t,j)=>{
 t.classList.toggle("active",i===j);
 });
-
 }
 
-/* INIT */
 load();
 
 </script>
-
 </body>
 </html>
-
