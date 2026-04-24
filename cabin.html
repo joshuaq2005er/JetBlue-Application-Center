@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Cabin Crew Application</title>
+<title>JetBlue Cabin Crew Application</title>
 
 <style>
 body{
@@ -10,9 +10,22 @@ font-family:Arial;
 background:linear-gradient(135deg,#dff1ff,#f7fbff);
 }
 
-.container{width:900px;margin:40px auto;}
-.card{background:white;padding:30px;border-radius:18px;}
-h2{text-align:center;color:#0073e6;}
+.container{
+width:900px;
+margin:40px auto;
+}
+
+.card{
+background:white;
+padding:30px;
+border-radius:18px;
+box-shadow:0 10px 30px rgba(0,0,0,0.08);
+}
+
+h2{
+text-align:center;
+color:#0073e6;
+}
 
 .section{display:none;}
 .active{display:block;}
@@ -23,18 +36,28 @@ padding:12px;
 margin:6px 0;
 border-radius:12px;
 border:1px solid #ddd;
+outline:none;
 }
 
 button{
-padding:12px;
+padding:12px 18px;
 background:#0073e6;
 color:white;
 border:none;
-border-radius:10px;
+border-radius:12px;
 cursor:pointer;
+margin-top:10px;
 }
 
-.error{color:red;font-size:13px;}
+.nav{
+display:flex;
+justify-content:space-between;
+}
+
+.error{
+color:red;
+font-size:13px;
+}
 </style>
 </head>
 
@@ -43,7 +66,8 @@ cursor:pointer;
 <div class="container">
 <div class="card">
 
-<h2>Cabin Crew Application</h2>
+<h2>JetBlue Flight Deck Application</h2>
+
 <div id="form"></div>
 
 </div>
@@ -53,127 +77,225 @@ cursor:pointer;
 
 let role="Cabin Crew";
 
-/* SECTION 1 */
+/* STATUS CHECK */
+let status=localStorage.getItem("roleStatus_"+role)||"OPEN";
+
+if(status==="CLOSED"){
+document.body.innerHTML="<h1 style='color:red;text-align:center;margin-top:100px'>APPLICATION CLOSED</h1>";
+throw new Error();
+}
+
+/* FORM */
 document.getElementById("form").innerHTML=`
 
+<!-- SECTION 1 -->
 <div class="section active">
-<h3>Section 1</h3>
-<pre>
+
+<h3>Section 1 of 6</h3>
+
+<pre style="white-space:pre-wrap;font-family:Arial;line-height:1.4">
+
 JetBlue Cabin Crew Application
-No AI allowed.
-Failure = blacklist.
+Welcome to the JetBlue Cabin Crew Application Form!
+
+This Application is for individuals wanting to serve for JetBlue as a Cabin Crew.
+This form should only be used as application as Ground Operator, and not to be used for anything else.
+
+Any Questions?
+Open a ticket in the main server.
+
+Before You Start Your Application, We've Got Some Requirements:
+- Age 13+
+- Must Have Proficient SPaG (Spelling, Punctuation and Grammar)
+- 150+ Minutes In PTFS
+- Previous Experience In The Air Industry Is Recommended.
+- No use of AI*.
+- Asking For The Current Status Of Your Application Results In An Immediate Failure.
+
+Good Luck!
+
+* The use of AI results in an immediate failure and a blacklist from all applications
+
 </pre>
+
 <button onclick="next()">Continue</button>
+
 </div>
 
 <!-- SECTION 2 -->
 <div class="section">
-<h3>Section 2</h3>
+<h3>Section 2 of 6 - Applicant Information</h3>
 
-<input id="discord" placeholder="Discord username *">
-<input id="discordid" placeholder="Discord ID *">
-<input id="roblox" placeholder="Roblox username *">
-<input id="time" placeholder="PTFS time *">
+<input id="ccdiscord" placeholder="What is your discord username? *">
+<input id="ccdiscordid" placeholder="Please provide your discord ID. If you do not know how, ask for assistance in support.*">
+<input id="ccroblox" placeholder="What is your roblox username? *">
+<input id="cctime" placeholder="How much PTFS flight time do you have? *">
 
-<select id="age">
-<option value="">Age *</option>
+<select id="ccage">
+<option value="">Age group *</option>
 <option>13-15</option>
 <option>16-17</option>
 <option>18-20</option>
 <option>21+</option>
+<option>Other</option>
 </select>
 
-<button onclick="next()">Next</button>
+
+<div class="error" id="e2"></div>
+
+<div class="nav">
+<button onclick="back()">Back</button>
+<button onclick="v2()">Next</button>
+</div>
 </div>
 
 <!-- SECTION 3 -->
 <div class="section">
-<h3>Section 3</h3>
+<h3>Section 3 of 6 - Activity</h3>
 
-<input id="timezone" placeholder="Timezone *">
-<input id="robloxact" placeholder="Roblox activity 1-5 *">
-<input id="discordact" placeholder="Discord activity 1-5 *">
-<input id="device" placeholder="Device *">
-<input id="grammar" placeholder="Grammar 1-5 *">
+<input id="cctimezone" placeholder="What timezone are you in? *">
+<input id="ccrobloxact" placeholder="Rate your roblox activity daily. 1-5 *">
+<input id="ccdiscordact" placeholder="Rate your discord activity daily. 1-5 *">
+<input id="ccdevice" placeholder="What device type will you attend flights on to pilot primarily? type *">
+<input id="ccgrammar" placeholder="Rate your grammar proficiency. 1-5 *">
 
-<button onclick="next()">Next</button>
+<div class="error" id="e3"></div>
+
+<div class="nav">
+<button onclick="back()">Back</button>
+<button onclick="v3()">Next</button>
+</div>
 </div>
 
 <!-- SECTION 4 -->
 <div class="section">
-<h3>Section 4</h3>
+<h3>Section 4 of 6 - About You</h3>
 
-<textarea id="words" placeholder="3 words *"></textarea>
-<select id="exp"><option value="">Experience *</option><option>Yes</option><option>No</option></select>
-<select id="mic"><option value="">Mic *</option><option>Yes</option><option>No</option></select>
+<textarea id="ccwords" placeholder="Describe yourself and what you enjoy doing (2+ sentences required).
 
-<textarea id="why" placeholder="Why JetBlue? *"></textarea>
-<textarea id="standout" placeholder="Stand out? *"></textarea>
-<textarea id="strengths" placeholder="Strengths & Weaknesses *"></textarea>
+<select id="ccexp">
+<option value="">Do you have any experience as Cabin Crew in any PTC groups? *</option>
+<option>Yes</option>
+<option>No</option>
+</select>
 
-<button onclick="next()">Next</button>
+<textarea id="ccwhy" placeholder="Why do you want to work at JetBlue? (2 sentences required) *"></textarea>
+<textarea id="ccstandout" placeholder="What makes you stand out over other applicants? (2+ sentences required) *"></textarea>
+<textarea id="ccstrengths" placeholder="What are your weaknesses and strengths? (2+ each)*"></textarea>
+
+<div class="error" id="e4"></div>
+
+<div class="nav">
+<button onclick="back()">Back</button>
+<button onclick="v4()">Next</button>
+</div>
 </div>
 
-<!-- SECTION 5 (YOUR QUESTIONS - UNCHANGED) -->
+<!-- SECTION 5 -->
 <div class="section">
-<h3>Section 5 - Cabin Crew Questions</h3>
+<h3>Section 5 of 6 - Scenarios</h3>
 
-<textarea id="s1" placeholder="Once the plane is cruising, what would your job be as a caterer? *"></textarea>
-<textarea id="s2" placeholder="If a passenger asks for something you don't serve, what would you do? *"></textarea>
-<textarea id="s3" placeholder="If a passenger is causing disturbance, what should you do? *"></textarea>
-<textarea id="s4" placeholder="During an emergency, what is your role? *"></textarea>
+<textarea id="ccs1" placeholder="Once the plane is cruising, what would your job be as a caterer? *"></textarea>
+<textarea id="ccs2" placeholder="If a passenger asks for something that you don't serve, what would be your reaction? *"></textarea>
+<textarea id="ccs3" placeholder="If a passenger is causing a disturbance to other passengers, what should you do? *"></textarea>
+<textarea id="ccs3" placeholder="During an emergency, what do you think your primary role would be to do? *"></textarea>
 
-<button onclick="next()">Next</button>
+<div class="error" id="e6"></div>
+
+<div class="nav">
+<button onclick="back()">Back</button>
+<button onclick="v6()">Next</button>
+</div>
 </div>
 
 <!-- SECTION 6 -->
 <div class="section">
-<h3>Section 6</h3>
+<h3>Section 6 of 6 - Agreements</h3>
 
-<select id="agree1"><option value="">Agree no leak *</option><option>Yes</option></select>
-<select id="agree2"><option value="">Follow rules *</option><option>Yes</option></select>
+<select id="ccagree1">
+<option value="">Do you agree to not leak ANY documents provided? *</option>
+<option>Yes</option><option>No</option><option>Maybe</option>
+</select>
 
-<button onclick="submit()">Submit</button>
+<select id="ccagree2">
+<option value="">Do you agree to follow all rules as a cabin crew if accepted? *</option>
+<option>Yes</option><option>No</option><option>Maybe</option>
+</select>
+
+<div class="error" id="e7"></div>
+
+<button onclick="submit()">Submit Application</button>
+
 </div>
 
 `;
 
-/* NAV */
 let sections=document.querySelectorAll(".section");
 let c=0;
+
+function show(){
+sections.forEach((s,i)=>s.classList.toggle("active",i===c));
+}
+
 function next(){if(c<sections.length-1)c++;show();}
-function show(){sections.forEach((s,i)=>s.classList.toggle("active",i===c));}
+function back(){if(c>0)c--;show();}
+
+/* VALIDATION */
+function v2(){
+if(!discord.value||!discordid.value||!roblox.value||!time.value||!age.value||!proof.value){
+e2.innerText="Fill all fields";return;
+}
+e2.innerText="";next();
+}
+
+function v3(){
+if(!timezone.value||!robloxact.value||!discordact.value||!device.value||!grammar.value){
+e3.innerText="Fill all fields";return;
+}
+e3.innerText="";next();
+}
+
+function v4(){
+if(!words.value||!exp.value||!mic.value||!why.value||!standout.value||!strengths.value){
+e4.innerText="Fill all fields";return;
+}
+e4.innerText="";next();
+}
+
+function v5(){
+if(!flaps.value||!vfr.value||!ils.value||!chart.value||!callouts.value||!flightplan.value){
+e5.innerText="Fill all fields";return;
+}
+e5.innerText="";next();
+}
+
+function v6(){
+if(!s1.value||!s2.value||!s3.value){
+e6.innerText="Fill all fields";return;
+}
+e6.innerText="";next();
+}
 
 /* SUBMIT */
 function submit(){
 
+if(!agree1.value||!agree2.value){
+e7.innerText="Complete agreements";return;
+}
+
 let apps=JSON.parse(localStorage.getItem("apps")||"[]");
 
 apps.push({
-role:"Cabin Crew",
-discord:discord.value,
-discordid:discordid.value,
-roblox:roblox.value,
-time:time.value,
-age:age.value,
-proof:proof.value,
-timezone:timezone.value,
-robloxact:robloxact.value,
-discordact:discordact.value,
-device:device.value,
-grammar:grammar.value,
-words:words.value,
-exp:exp.value,
-mic:mic.value,
-why:why.value,
-standout:standout.value,
-strengths:strengths.value,
-s1:s1.value,
-s2:s2.value,
-s3:s3.value,
-s4:s4.value,
-agree1:agree1.value,
-agree2:agree2.value,
+role,
+ccdiscord:ccdiscord.value,
+ccdiscordid:ccdiscordid.value,
+ccroblox:ccroblox.value,
+cctime:cctime.value,
+ccage:ccage.value,
+ccwhy:ccwhy.value,
+ccs1:ccs1.value,
+ccs2:ccs2.value,
+ccs3:ccs3.value,
 date:new Date().toLocaleString(),
 hidden:false,
 deleted:false
@@ -181,10 +303,14 @@ deleted:false
 
 localStorage.setItem("apps",JSON.stringify(apps));
 
+let history=JSON.parse(localStorage.getItem("history")||"[]");
+history.push(apps[apps.length-1]);
+localStorage.setItem("history",JSON.stringify(history));
+
 alert("Submitted!");
 location.href="index.html";
 }
-
+  
 </script>
 
 </body>
