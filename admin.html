@@ -1,90 +1,67 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>JetBlue Admin Dashboard</title>
+  <title>JetBlue Admin</title>
 
   <style>
-    body {
-      font-family: Arial;
-      margin: 0;
-      background: #eef6ff;
-    }
-
-    .header {
-      background: #0073e6;
-      color: white;
-      padding: 20px;
-      text-align: center;
-    }
-
-    .container {
-      width: 90%;
-      margin: 20px auto;
-    }
-
+    body { font-family:Arial; background:#eef6ff; }
     .card {
-      background: white;
-      padding: 15px;
-      margin: 10px 0;
-      border-radius: 10px;
-      box-shadow: 0 5px 12px rgba(0,0,0,0.08);
+      background:white; padding:15px;
+      margin:10px; border-radius:10px;
     }
 
-    select, button {
-      margin-top: 8px;
-      padding: 6px;
-    }
-
-    button {
-      background: red;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
+    select, button { margin-top:5px; }
   </style>
 </head>
 
 <body>
 
-<div class="header">
-  <h1>JetBlue Admin Dashboard</h1>
-</div>
+<h1>Admin Dashboard</h1>
 
-<div class="container" id="list"></div>
+<div id="list"></div>
 
 <script>
 
-function load() {
+function load(){
   let apps = JSON.parse(localStorage.getItem("applications") || "[]");
-  let list = document.getElementById("list");
 
+  let list = document.getElementById("list");
   list.innerHTML = "";
 
   apps.forEach(app => {
 
     list.innerHTML += `
       <div class="card">
-        <b>Role:</b> ${app.role}<br>
-        <b>Date:</b> ${app.date}<br>
-        <b>Status:</b> ${app.status}<br>
 
-        <select onchange="change(${app.id}, this.value)">
+        <b>Role:</b> ${app.role}<br>
+        <b>Status:</b> ${app.status}<br>
+        <b>Date:</b> ${app.date}<br><br>
+
+        <b>Discord:</b> ${app.discord}<br>
+        <b>Roblox:</b> ${app.roblox}<br>
+        <b>Time:</b> ${app.time}<br><br>
+
+        <b>Why:</b> ${app.why}<br><br>
+        <b>Strengths:</b> ${app.strengths}<br><br>
+
+        <select onchange="update(${app.id}, this.value)">
           <option ${app.status==="Pending"?"selected":""}>Pending</option>
-          <option ${app.status==="Reviewed"?"selected":""}>Reviewed</option>
-          <option ${app.status==="Closed"?"selected":""}>Closed</option>
+          <option ${app.status==="Accepted"?"selected":""}>Accepted</option>
+          <option ${app.status==="Denied"?"selected":""}>Denied</option>
         </select>
 
         <button onclick="del(${app.id})">Delete</button>
+
       </div>
     `;
   });
 }
 
-function change(id, status) {
+function update(id, status){
   let apps = JSON.parse(localStorage.getItem("applications") || "[]");
 
-  apps = apps.map(a => {
-    if (a.id === id) a.status = status;
+  apps = apps.map(a=>{
+    if(a.id === id) a.status = status;
     return a;
   });
 
@@ -92,7 +69,7 @@ function change(id, status) {
   load();
 }
 
-function del(id) {
+function del(id){
   let apps = JSON.parse(localStorage.getItem("applications") || "[]");
 
   apps = apps.filter(a => a.id !== id);
