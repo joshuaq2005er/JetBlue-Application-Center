@@ -87,44 +87,21 @@ throw new Error();
 document.getElementById("form").innerHTML=`
 
 <div class="section active">
-
 <h3>Section 1 of 6</h3>
 
 <pre style="white-space:pre-wrap;font-family:Arial;line-height:1.4">
-
 JetBlue Cabin Crew Application
 Welcome to the JetBlue Cabin Crew Application Form!
-
-This Application is for individuals wanting to serve for JetBlue as a Cabin Crew.
-This form should only be used as application as Ground Operator, and not to be used for anything else.
-
-Any Questions?
-Open a ticket in the main server.
-
-Before You Start Your Application, We've Got Some Requirements:
-- Age 13+
-- Must Have Proficient SPaG (Spelling, Punctuation and Grammar)
-- 150+ Minutes In PTFS
-- Previous Experience In The Air Industry Is Recommended.
-- No use of AI*.
-- Asking For The Current Status Of Your Application Results In An Immediate Failure.
-
-Good Luck!
-
-* The use of AI results in an immediate failure and a blacklist from all applications
-
 </pre>
 
 <button onclick="next()">Continue</button>
-
 </div>
 
 <div class="section">
-
 <h3>Section 2 of 6 - Applicant Information</h3>
 
 <input id="ccdiscord" placeholder="What is your discord username? *">
-<input id="ccdiscordid" placeholder="Please provide your discord ID. If you do not know how, ask for assistance in support.*">
+<input id="ccdiscordid" placeholder="Please provide your discord ID. *">
 <input id="ccroblox" placeholder="What is your roblox username? *">
 <input id="cctime" placeholder="How much PTFS flight time do you have? *">
 
@@ -149,10 +126,10 @@ Good Luck!
 <h3>Section 3 of 6 - Activity</h3>
 
 <input id="cctimezone" placeholder="What timezone are you in? *">
-<input id="ccrobloxact" placeholder="Rate your roblox activity daily. 1-5 *">
-<input id="ccdiscordact" placeholder="Rate your discord activity daily. 1-5 *">
-<input id="ccdevice" placeholder="What device type will you attend flights on to pilot primarily? type *">
-<input id="ccgrammar" placeholder="Rate your grammar proficiency. 1-5 *">
+<input id="ccrobloxact" placeholder="Rate Roblox activity 1-5 *">
+<input id="ccdiscordact" placeholder="Rate Discord activity 1-5 *">
+<input id="ccdevice" placeholder="Device type *">
+<input id="ccgrammar" placeholder="Grammar 1-5 *">
 
 <div class="error" id="e3"></div>
 
@@ -165,17 +142,17 @@ Good Luck!
 <div class="section">
 <h3>Section 4 of 6 - About You</h3>
 
-<textarea id="ccwords" placeholder="Describe yourself and what you enjoy doing (2+ sentences required)."></textarea>
+<textarea id="ccwords" placeholder="Describe yourself (2+ sentences)."></textarea>
 
 <select id="ccexp">
-<option value="">Do you have any experience as Cabin Crew in any PTC groups? *</option>
+<option value="">Do you have experience? *</option>
 <option>Yes</option>
 <option>No</option>
 </select>
 
-<textarea id="ccwhy" placeholder="Why do you want to work at JetBlue? (2 sentences required) *"></textarea>
-<textarea id="ccstandout" placeholder="What makes you stand out over other applicants? (2+ sentences required) *"></textarea>
-<textarea id="ccstrengths" placeholder="What are your weaknesses and strengths? (2+ each)*"></textarea>
+<textarea id="ccwhy" placeholder="Why JetBlue? *"></textarea>
+<textarea id="ccstandout" placeholder="What makes you stand out? *"></textarea>
+<textarea id="ccstrengths" placeholder="Strengths and weaknesses *"></textarea>
 
 <div class="error" id="e4"></div>
 
@@ -188,10 +165,10 @@ Good Luck!
 <div class="section">
 <h3>Section 5 of 6 - Scenarios</h3>
 
-<textarea id="ccs1" placeholder="Once the plane is cruising, what would your job be as a caterer? *"></textarea>
-<textarea id="ccs2" placeholder="If a passenger asks for something that you don't serve, what would be your reaction? *"></textarea>
-<textarea id="ccs3" placeholder="If a passenger is causing a disturbance to other passengers, what should you do? *"></textarea>
-<textarea id="ccs4" placeholder="During an emergency, what do you think your primary role would be to do? *"></textarea>
+<textarea id="ccs1" placeholder="Cruising job? *"></textarea>
+<textarea id="ccs2" placeholder="Passenger request not served? *"></textarea>
+<textarea id="ccs3" placeholder="Disturbance? *"></textarea>
+<textarea id="ccs4" placeholder="Emergency role? *"></textarea>
 
 <div class="error" id="e6"></div>
 
@@ -205,12 +182,12 @@ Good Luck!
 <h3>Section 6 of 6 - Agreements</h3>
 
 <select id="ccagree1">
-<option value="">Do you agree to not leak ANY documents provided? *</option>
+<option value="">Do you agree to not leak documents? *</option>
 <option>Yes</option><option>No</option><option>Maybe</option>
 </select>
 
 <select id="ccagree2">
-<option value="">Do you agree to follow all rules as a cabin crew if accepted? *</option>
+<option value="">Do you agree to follow rules? *</option>
 <option>Yes</option><option>No</option><option>Maybe</option>
 </select>
 
@@ -219,7 +196,6 @@ Good Luck!
 <button onclick="submit()">Submit Application</button>
 
 </div>
-
 `;
 
 let sections=document.querySelectorAll(".section");
@@ -232,7 +208,6 @@ sections.forEach((s,i)=>s.classList.toggle("active",i===c));
 function next(){if(c<sections.length-1)c++;show();}
 function back(){if(c>0)c--;show();}
 
-/* VALIDATION */
 function v2(){
 if(!ccdiscord.value||!ccdiscordid.value||!ccroblox.value||!cctime.value||!ccage.value){
 e2.innerText="Fill all fields";return;
@@ -273,28 +248,31 @@ let apps=JSON.parse(localStorage.getItem("apps")||"[]");
 apps.push({
 role,
 
-discord:ccdiscord.value,
-discordid:ccdiscordid.value,
-roblox:ccroblox.value,
-time:cctime.value,
-age:ccage.value,
+ccdiscord:ccdiscord.value,
+ccdiscordid:ccdiscordid.value,
+ccroblox:ccroblox.value,
+cctime:cctime.value,
+ccage:ccage.value,
 
-timezone:cctimezone.value,
-robloxact:ccrobloxact.value,
-discordact:ccdiscordact.value,
-device:ccdevice.value,
-grammar:ccgrammar.value,
+cctimezone:cctimezone.value,
+ccrobloxact:ccrobloxact.value,
+ccdiscordact:ccdiscordact.value,
+ccdevice:ccdevice.value,
+ccgrammar:ccgrammar.value,
 
-words:ccwords.value,
-exp:ccexp.value,
-why:ccwhy.value,
-standout:ccstandout.value,
-strengths:ccstrengths.value,
+ccwords:ccwords.value,
+ccexp:ccexp.value,
+ccwhy:ccwhy.value,
+ccstandout:ccstandout.value,
+ccstrengths:ccstrengths.value,
 
-s1:ccs1.value,
-s2:ccs2.value,
-s3:ccs3.value,
-s4:ccs4.value,
+ccs1:ccs1.value,
+ccs2:ccs2.value,
+ccs3:ccs3.value,
+ccs4:ccs4.value,
+
+ccagree1:ccagree1.value,
+ccagree2:ccagree2.value,
 
 date:new Date().toLocaleString(),
 hidden:false,
@@ -308,10 +286,9 @@ history.push(apps[apps.length-1]);
 localStorage.setItem("history",JSON.stringify(history));
 
 alert("Submitted!");
-location.href="index.html";
+location.href="cabin.html";
 }
 
 </script>
-
 </body>
 </html>
