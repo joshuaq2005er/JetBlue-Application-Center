@@ -135,15 +135,15 @@ localStorage.setItem("roleStatus_"+role, s==="OPEN"?"CLOSED":"OPEN");
 load();
 }
 
-/* LOAD BOTH SYSTEMS */
+/* LOAD ALL APPLICATIONS */
 function load(){
 
 let fdApps = JSON.parse(localStorage.getItem("flightdeck_apps") || "[]");
 let ccApps = JSON.parse(localStorage.getItem("cabincrew_apps") || "[]");
 
 let apps = [
-...fdApps.map(a=>({...a,type:"FD"})),
-...ccApps.map(a=>({...a,type:"CC"}))
+...fdApps.map(a=>({...a,type:"Flight Deck"})),
+...ccApps.map(a=>({...a,type:"Cabin Crew"}))
 ];
 
 let roles=["Flight Deck","Cabin Crew","Ground Crew"];
@@ -169,13 +169,16 @@ Status: <b style="color:${s==='OPEN'?'green':'red'}">${s}</b><br>
 `;
 });
 
+/* STORE GLOBALLY */
+window.allApps=apps;
+
 /* APPLICATIONS */
 apps.forEach((a,i)=>{
 
 appsDiv.innerHTML+=`
 <div class="card">
 
-<h3>${a.type==="FD"?"✈ Flight Deck":"💺 Cabin Crew"}</h3>
+<h3>${a.type}</h3>
 
 <b>Discord:</b> ${a.discord || a.ccdiscord || ""}<br>
 <b>Roblox:</b> ${a.roblox || a.ccroblox || ""}<br>
@@ -189,17 +192,8 @@ Show Full Application
 `;
 });
 
-/* STORE GLOBAL FOR MODAL */
-window.allApps=apps;
-
 /* HISTORY */
-let history=[];
-
-apps.forEach(a=>{
-history.push(a);
-});
-
-historyDiv.innerHTML=history.map(h=>`
+historyDiv.innerHTML=apps.map(h=>`
 <div class="card">
 <b>${h.type}</b><br>
 ${h.discord || h.ccdiscord || ""}<br>
@@ -210,16 +204,18 @@ ${h.date}
 
 }
 
-/* SHOW FULL APPLICATION */
+/* FULL VIEW */
 function showMore(i){
 
 let a=window.allApps[i];
 
 let html="";
 
-if(a.type==="FD"){
+if(a.type==="Flight Deck"){
+
 html=`
 <h3>✈ FLIGHT DECK APPLICATION</h3>
+
 Discord: ${a.discord}<br>
 Discord ID: ${a.discordid}<br>
 Roblox: ${a.roblox}<br>
@@ -228,8 +224,8 @@ Age: ${a.age}<br>
 Proof: ${a.proof}<br><br>
 
 Timezone: ${a.timezone}<br>
-Roblox Activity: ${a.robloxact}<br>
-Discord Activity: ${a.discordact}<br>
+Roblox Act: ${a.robloxact}<br>
+Discord Act: ${a.discordact}<br>
 Device: ${a.device}<br>
 Grammar: ${a.grammar}<br><br>
 
@@ -253,9 +249,11 @@ S3: ${a.s3}<br>
 `;
 }
 
-if(a.type==="CC"){
+if(a.type==="Cabin Crew"){
+
 html=`
 <h3>💺 CABIN CREW APPLICATION</h3>
+
 Discord: ${a.ccdiscord}<br>
 Discord ID: ${a.ccdiscordid}<br>
 Roblox: ${a.ccroblox}<br>
@@ -263,8 +261,8 @@ Time: ${a.cctime}<br>
 Age: ${a.ccage}<br><br>
 
 Timezone: ${a.cctimezone}<br>
-Roblox Activity: ${a.ccrobloxact}<br>
-Discord Activity: ${a.ccdiscordact}<br>
+Roblox Act: ${a.ccrobloxact}<br>
+Discord Act: ${a.ccdiscordact}<br>
 Device: ${a.ccdevice}<br>
 Grammar: ${a.ccgrammar}<br><br>
 
