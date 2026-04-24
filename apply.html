@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Apply - JetBlue</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial;
+      background: linear-gradient(135deg, #e6f2ff, #ffffff);
+      text-align: center;
+    }
+
+    .box {
+      width: 420px;
+      margin: 70px auto;
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      color: #0073e6;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #0073e6;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .role {
+      font-weight: bold;
+      color: #444;
+      margin-bottom: 10px;
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <div class="box">
+
+    <h1>Application Form</h1>
+
+    <div class="role" id="roleText"></div>
+
+    <form>
+      <input type="text" placeholder="Full Name" required>
+      <input type="email" placeholder="Email" required>
+      <textarea placeholder="Why do you want to join?" rows="5" required></textarea>
+      <button type="submit">Submit Application</button>
+    </form>
+
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const role = params.get("role");
+    document.getElementById("roleText").innerText = "Applying for: " + role;
+  </script>
+
+</body>
+</html>
