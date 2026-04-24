@@ -1,158 +1,150 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>JetBlue Application</title>
+<title>Application</title>
 
-  <style>
-    body { font-family: Arial; margin: 0; background: #eef6ff; }
+<style>
+body{font-family:Arial;background:#eef6ff;margin:0;}
+.container{width:800px;margin:30px auto;}
+.box{background:white;padding:20px;border-radius:10px;}
 
-    .container {
-      width: 750px;
-      margin: 40px auto;
-    }
+.section{display:none;}
+.active{display:block;}
 
-    .header {
-      background: #0073e6;
-      color: white;
-      padding: 20px;
-      border-radius: 12px;
-    }
+input,textarea,select{
+width:100%;padding:10px;margin:5px 0;
+}
 
-    .box {
-      background: white;
-      margin-top: 20px;
-      padding: 25px;
-      border-radius: 12px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-    }
-
-    input, textarea, select {
-      width: 100%;
-      padding: 10px;
-      margin: 8px 0;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-    }
-
-    button {
-      width: 100%;
-      padding: 12px;
-      background: #0073e6;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    .bar {
-      height: 10px;
-      background: #ddd;
-      border-radius: 5px;
-      overflow: hidden;
-      margin-bottom: 5px;
-    }
-
-    .fill {
-      height: 10px;
-      width: 0%;
-      background: #0073e6;
-    }
-
-    .role {
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-  </style>
+button{
+padding:10px;background:#0073e6;color:white;border:none;
+cursor:pointer;
+}
+</style>
 </head>
 
 <body>
 
 <div class="container">
-
-<div class="header">
-  <h1>JetBlue Application</h1>
-</div>
-
 <div class="box">
 
-<div class="bar"><div class="fill" id="fill"></div></div>
-<p id="progress">Progress: 0%</p>
+<h2>Application</h2>
 
-<div class="role" id="roleText"></div>
-
-<form onsubmit="submitApp(event)">
-
-<input id="discord" placeholder="Discord Username">
-<input id="roblox" placeholder="Roblox Username">
-<input id="time" type="number" placeholder="PTFS Flight Time">
-
-<textarea id="why" placeholder="Why do you want to join?"></textarea>
-<textarea id="strengths" placeholder="Strengths & Weaknesses"></textarea>
-
-<select id="agree">
-  <option>Yes</option>
-  <option>No</option>
-</select>
-
-<button>Submit</button>
-
-</form>
+<div id="form"></div>
 
 </div>
-
 </div>
 
 <script>
 
-const params = new URLSearchParams(window.location.search);
+const params=new URLSearchParams(location.search);
+let role=params.get("role");
 
-let role = params.get("role") || "Flight Deck";
-let status = params.get("status") || "OPEN";
+let roleStatus=localStorage.getItem("role_"+role)||"OPEN";
 
-document.getElementById("roleText").innerText =
-"Applying for: " + role + " (" + status + ")";
-
-// progress bar
-const inputs = document.querySelectorAll("input, textarea, select");
-const fill = document.getElementById("fill");
-const progress = document.getElementById("progress");
-
-function update(){
-  let count = 0;
-  inputs.forEach(i => { if(i.value) count++; });
-
-  let p = Math.round((count / inputs.length) * 100);
-  fill.style.width = p + "%";
-  progress.innerText = "Progress: " + p + "%";
+if(roleStatus==="CLOSED"){
+document.body.innerHTML=`
+<h1 style="color:red;text-align:center;margin-top:100px;">
+🚫 Applications Closed
+</h1>
+<p style="text-align:center;">This role is closed.</p>
+`;
+throw new Error();
 }
 
-inputs.forEach(i => i.addEventListener("input", update));
+let current=0;
 
-// submit
-function submitApp(e){
-  e.preventDefault();
+document.getElementById("form").innerHTML=`
 
-  let apps = JSON.parse(localStorage.getItem("applications") || "[]");
+<div class="section active">
 
-  apps.push({
-    id: Date.now(),
-    role,
-    status: "Pending",
+<h3>Section 1 of 7</h3>
+<p>JetBlue Flight Deck Application</p>
 
-    discord: discord.value,
-    roblox: roblox.value,
-    time: time.value,
-    why: why.value,
-    strengths: strengths.value,
-    agree: agree.value,
+<button onclick="next()">Next</button>
+</div>
 
-    date: new Date().toLocaleString()
-  });
+<div class="section">
+<h3>Section 2</h3>
+<input id="discord" placeholder="Discord">
+<input id="roblox" placeholder="Roblox">
+<input id="time" placeholder="Flight Time">
+<button onclick="back()">Back</button>
+<button onclick="next()">Next</button>
+</div>
 
-  localStorage.setItem("applications", JSON.stringify(apps));
+<div class="section">
+<h3>Section 3</h3>
+<input id="timezone" placeholder="Timezone">
+<input id="activity" placeholder="Activity">
+<button onclick="back()">Back</button>
+<button onclick="next()">Next</button>
+</div>
 
-  alert("Application submitted!");
-  location.href = "index.html";
+<div class="section">
+<h3>Section 4</h3>
+<textarea id="why"></textarea>
+<textarea id="strengths"></textarea>
+<button onclick="back()">Back</button>
+<button onclick="next()">Next</button>
+</div>
+
+<div class="section">
+<h3>Section 5</h3>
+<textarea id="flightq"></textarea>
+<button onclick="back()">Back</button>
+<button onclick="next()">Next</button>
+</div>
+
+<div class="section">
+<h3>Section 6</h3>
+<textarea id="scenario"></textarea>
+<button onclick="back()">Back</button>
+<button onclick="next()">Next</button>
+</div>
+
+<div class="section">
+<h3>Section 7</h3>
+<button onclick="submit()">Submit</button>
+<button onclick="back()">Back</button>
+</div>
+
+`;
+
+let sections=document.querySelectorAll(".section");
+
+function show(){
+sections.forEach((s,i)=>{
+s.classList.remove("active");
+if(i===current)s.classList.add("active");
+});
+}
+
+function next(){if(current<sections.length-1)current++;show();}
+function back(){if(current>0)current--;show();}
+
+function submit(){
+
+let apps=JSON.parse(localStorage.getItem("apps")||"[]");
+
+apps.push({
+id:Date.now(),
+role,
+discord:discord.value,
+roblox:roblox.value,
+time:time.value,
+timezone:timezone.value,
+activity:activity.value,
+why:why.value,
+strengths:strengths.value,
+flightq:flightq.value,
+scenario:scenario.value,
+date:new Date().toLocaleString()
+});
+
+localStorage.setItem("apps",JSON.stringify(apps));
+
+alert("Submitted");
+location.href="index.html";
 }
 
 </script>
