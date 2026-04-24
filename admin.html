@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>JetBlue Flight Deck Admin Dashboard</title>
+<title>JetBlue Admin Dashboard</title>
 
 <style>
 body{
@@ -57,6 +57,7 @@ border-radius:6px;
 cursor:pointer;
 }
 
+/* MODAL */
 #modal{
 display:none;
 position:fixed;
@@ -82,7 +83,7 @@ overflow:auto;
 <body>
 
 <div class="header">
-<h2>JetBlue Flight Deck Admin Dashboard</h2>
+<h2>JetBlue Admin Dashboard</h2>
 </div>
 
 <div class="tabs">
@@ -99,6 +100,7 @@ overflow:auto;
 
 </div>
 
+<!-- MODAL -->
 <div id="modal">
 <div id="modalBox">
 <h3>Application Details</h3>
@@ -109,19 +111,25 @@ overflow:auto;
 
 <script>
 
-/* PASSWORD */
+/* ================= PASSWORD ================= */
 let pass = prompt("Admin Password:");
-if(pass !== "JB123478JBFD"){
+
+if(pass !== "JB123478JBC"){
 document.body.innerHTML = "<h1 style='color:red;text-align:center;margin-top:100px'>ACCESS DENIED</h1>";
 throw new Error();
 }
 
-/* STORAGE */
+/* ================= SAFE STORAGE ================= */
 function get(key){
 return JSON.parse(localStorage.getItem(key) || "[]");
 }
 
-/* STATUS */
+/* ================= SAVE ================= */
+function save(){
+localStorage.setItem("apps", JSON.stringify(get("apps")));
+}
+
+/* ================= STATUS ================= */
 function getStatus(role){
 let s = localStorage.getItem("roleStatus_"+role);
 if(!s){
@@ -137,7 +145,7 @@ localStorage.setItem("roleStatus_"+role, s==="OPEN"?"CLOSED":"OPEN");
 load();
 }
 
-/* APP ACTIONS */
+/* ================= HIDE ================= */
 function hideApp(i){
 if(!confirm("Hide this application?")) return;
 
@@ -147,6 +155,7 @@ localStorage.setItem("apps",JSON.stringify(apps));
 load();
 }
 
+/* ================= DELETE ================= */
 function deleteApp(i){
 if(!confirm("Delete this application?")) return;
 
@@ -156,7 +165,7 @@ localStorage.setItem("apps",JSON.stringify(apps));
 load();
 }
 
-/* MODAL */
+/* ================= SHOW MORE ================= */
 function showMore(i){
 let a=get("apps")[i];
 
@@ -174,41 +183,40 @@ document.getElementById("modalContent").innerHTML=`
 <hr>
 
 <b>Activity and Availability:</b><br>
-<b>Timezone:</b> ${a.timezone}<br>
-<b>Roblox Activity out of 5:</b> ${a.robloxact}<br>
-<b>Discord activity out of 5:</b> ${a.discordact}<br>
-<b>Device:</b> ${a.device}<br><br>
+Timezone:</b> ${a.timezone}<br>
+Roblox Activity out of 5:</b> ${a.robloxact}<br>
+Discord activity out of 5:</b> ${a.discordact}<br>
+Device:</b> ${a.device}<br><br>
 
 <hr>
 
 <b>Flight-related questions:</b><br>
-<b>3 words staff will describe you as:</b> ${a.words}<br>
-<b>Experience:</b> ${a.exp}<br>
-<b>Working Mic:</b> ${a.mic}<br>
-<b>Why JetBlue:</b> ${a.why}<br>
-<b>What makes you stand out:</b> ${a.standout}<br>
-<b>Strengths & Weaknesses:</b> ${a.strengths}<br><br>
+3 words staff will describe you as?:</b> ${a.words}<br>
+Experience: ${a.exp}<br>
+Working Mic:${a.mic}<br>
+Why does he want to work at JetBlue? (2 sentences required): ${a.why}<br>
+What makes him stand out over other applicants? (2+ sentences required): ${a.standout}<br>
+Weaknesses And Wtrengths? (2+ each): ${a.strengths}<br><br>
 
 <b>Flight Knowledge:</b><br>
-Flaps:</b> ${a.flaps}<br>
-VFR/IFR:</b> ${a.vfr}<br>
-ILS:</b> ${a.ils}<br>
-Airport Chart:</b> ${a.chart}<br>
-Callouts:</b> ${a.callouts}<br>
-Flight Plan:</b> ${a.flightplan}<br><br>
+Explain when to retract flaps.: ${a.flaps}<br>
+Explain what VFR and IFR mean.: ${a.vfr}<br>
+What does ILS stand for and when is it used?: ${a.ils}<br>
+What is the point of a airport chart?: ${a.chart}<br>
+Choose the appropriate callouts needed during the takeoff roll.: ${a.callouts}<br>
+What is a flight plan and why are they crucial?: ${a.flightplan}<br><br>
 
 <hr>
 
 <b>Scenarios:</b><br>
-Passenger disturbance:</b> ${a.s1}<br>
-Engine fire:</b> ${a.s2}<br>
-Trollers:</b> ${a.s3}<br><br>
+What would he do if a passenger was causing disturbance on the plane however you were still in the air?: ${a.s1}<br>
+What would you do if suddenly an engine caught on fire?: ${a.s2}<br>
+What would you do if there was trollers aboard the flight attempting to ruin it?: ${a.s3}<br><br>
 
 <hr>
-
 <b>Agreements:</b><br>
-No leaking documents:</b> ${a.agree1}<br>
-Follow rules:</b> ${a.agree2}<br>
+Does he agree to not leak ANY documents provided?: ${a.s3}<br>
+Does he agree to follow all rules as a flight deck if accepted?: ${a.s3}<br><br>
 `;
 
 document.getElementById("modal").style.display="block";
@@ -218,7 +226,7 @@ function closeModal(){
 document.getElementById("modal").style.display="none";
 }
 
-/* LOAD */
+/* ================= LOAD ================= */
 function load(){
 
 let roles=["Flight Deck","Cabin Crew","Ground Crew"];
@@ -231,7 +239,7 @@ statusDiv.innerHTML="";
 appsDiv.innerHTML="";
 historyDiv.innerHTML="";
 
-/* STATUS */
+/* ===== STATUS TAB ===== */
 roles.forEach(r=>{
 let s=getStatus(r);
 
@@ -244,7 +252,7 @@ Status: <b style="color:${s==='OPEN'?'green':'red'}">${s}</b><br>
 `;
 });
 
-/* APPS */
+/* ===== APPLICATIONS ===== */
 let apps=get("apps");
 
 apps.forEach((a,i)=>{
@@ -252,6 +260,7 @@ if(a.deleted) return;
 
 appsDiv.innerHTML+=`
 <div class="card" style="opacity:${a.hidden?0.5:1}">
+
 <h3>${a.role}</h3>
 
 <b>Discord:</b> ${a.discord}<br>
@@ -274,7 +283,7 @@ Show More
 `;
 });
 
-/* HISTORY */
+/* ===== HISTORY ===== */
 let history=get("history")||[];
 
 history.forEach(h=>{
@@ -290,7 +299,7 @@ ${h.date}
 
 }
 
-/* TABS */
+/* ================= TABS ================= */
 function showTab(i){
 
 ["status","apps","history"].forEach((id,j)=>{
@@ -303,6 +312,7 @@ t.classList.toggle("active",i===j);
 
 }
 
+/* INIT */
 load();
 
 </script>
