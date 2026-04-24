@@ -57,7 +57,6 @@ border-radius:6px;
 cursor:pointer;
 }
 
-/* MODAL */
 #modal{
 display:none;
 position:fixed;
@@ -70,7 +69,7 @@ z-index:999;
 
 #modalBox{
 background:white;
-width:650px;
+width:750px;
 margin:60px auto;
 padding:20px;
 border-radius:12px;
@@ -103,7 +102,7 @@ overflow:auto;
 <!-- MODAL -->
 <div id="modal">
 <div id="modalBox">
-<h3>Application Details</h3>
+<h3>Application Details (FULL)</h3>
 <div id="modalContent"></div>
 <button onclick="closeModal()">Close</button>
 </div>
@@ -140,75 +139,89 @@ localStorage.setItem("roleStatus_"+role, s==="OPEN"?"CLOSED":"OPEN");
 load();
 }
 
-/* HIDE */
+/* HIDE / DELETE */
 function hideApp(i){
-if(!confirm("Hide this application?")) return;
-
 let apps=get("apps");
 apps[i].hidden=!apps[i].hidden;
 localStorage.setItem("apps",JSON.stringify(apps));
 load();
 }
 
-/* DELETE */
 function deleteApp(i){
-if(!confirm("Delete this application?")) return;
-
 let apps=get("apps");
 apps[i].deleted=true;
 localStorage.setItem("apps",JSON.stringify(apps));
 load();
 }
 
-/* MODAL FIXED */
+/* ================= FULL SHOW ALL QUESTIONS ================= */
 function showMore(i){
 let a=get("apps")[i];
 
 document.getElementById("modalContent").innerHTML=`
 
-<b>Role:</b> ${a.role}<br><br>
+<h3>ROLE: ${a.role}</h3>
 
 <hr>
 
-<b>Applicant Information:</b><br>
-Discord Username: ${a.discord}<br>
-Discord ID: ${a.discordid}<br>
-Roblox Username: ${a.roblox}<br>
-PTFS flight time: ${a.time}<br>
-Age Group: ${a.age}<br><br>
+<h4>📌 Applicant Info</h4>
+Discord Username: ${a.discord || ""}<br>
+Discord ID: ${a.discordid || ""}<br>
+Roblox Username: ${a.roblox || ""}<br>
+PTFS Time: ${a.time || ""}<br>
+Age Group: ${a.age || ""}<br>
+Proof: ${a.proof || ""}<br>
 
 <hr>
 
-<b>Activity:</b><br>
-Timezone: ${a.timezone}<br>
-Roblox Activity: ${a.robloxact}<br>
-Discord Activity: ${a.discordact}<br>
-Device: ${a.device}<br>
-Grammar: ${a.grammar}<br><br>
+<h4>📌 Activity (ALL ROLES)</h4>
+Timezone: ${a.timezone || ""}<br>
+Roblox Activity: ${a.robloxact || ""}<br>
+Discord Activity: ${a.discordact || ""}<br>
+Device: ${a.device || ""}<br>
+Grammar: ${a.grammar || ""}<br>
 
 <hr>
 
-<b>About:</b><br>
-${a.words}<br><br>
-
-Experience: ${a.exp}<br>
-Why JetBlue: ${a.why}<br>
-Standout: ${a.standout}<br>
-Strengths/Weaknesses: ${a.strengths}<br><br>
-
-<hr>
-
-<b>Scenarios:</b><br>
-1: ${a.s1}<br>
-2: ${a.s2}<br>
-3: ${a.s3}<br>
-4: ${a.s4}<br><br>
+<h4>📌 Cabin Crew Section (if used)</h4>
+Describe Yourself: ${a.ccwords || ""}<br>
+Experience Cabin Crew: ${a.ccexp || ""}<br>
+Why JetBlue: ${a.ccwhy || ""}<br>
+Standout: ${a.ccstandout || ""}<br>
+Strengths: ${a.ccstrengths || ""}<br>
 
 <hr>
 
-<b>Agreements:</b><br>
-Leak Agreement: ${a.agree1}<br>
-Rules Agreement: ${a.agree2}<br>
+<h4>📌 Flight Knowledge</h4>
+Flaps: ${a.flaps || ""}<br>
+VFR/IFR: ${a.vfr || ""}<br>
+ILS: ${a.ils || ""}<br>
+Airport Chart: ${a.chart || ""}<br>
+Callouts: ${a.callouts || ""}<br>
+Flight Plan: ${a.flightplan || ""}<br>
+
+<hr>
+
+<h4>📌 Scenarios</h4>
+Scenario 1: ${a.s1 || ""}<br>
+Scenario 2: ${a.s2 || ""}<br>
+Scenario 3: ${a.s3 || ""}<br>
+Scenario 4 (Cabin Crew): ${a.s4 || ""}<br>
+
+<hr>
+
+<h4>📌 Agreements</h4>
+Agree 1: ${a.agree1 || ""}<br>
+Agree 2: ${a.agree2 || ""}<br>
+
+<hr>
+
+<h4>📌 Legacy Cabin Crew Fields</h4>
+CC Discord: ${a.ccdiscord || ""}<br>
+CC Discord ID: ${a.ccdiscordid || ""}<br>
+CC Roblox: ${a.ccroblox || ""}<br>
+CC Time: ${a.cctime || ""}<br>
+CC Age: ${a.ccage || ""}<br>
 
 `;
 
@@ -256,8 +269,8 @@ appsDiv.innerHTML+=`
 
 <h3>${a.role}</h3>
 
-<b>Discord:</b> ${a.discord}<br>
-<b>Roblox:</b> ${a.roblox}<br>
+<b>Discord:</b> ${a.discord || a.ccdiscord || ""}<br>
+<b>Roblox:</b> ${a.roblox || a.ccroblox || ""}<br>
 <b>Date:</b> ${a.date}<br>
 
 <button onclick="hideApp(${i})">
@@ -269,7 +282,7 @@ Delete Application
 </button>
 
 <button onclick="showMore(${i})" style="background:#0073e6;color:white;">
-Show More
+Show Full Application
 </button>
 
 </div>
@@ -283,8 +296,8 @@ history.forEach(h=>{
 historyDiv.innerHTML+=`
 <div class="card">
 <b>${h.role}</b><br>
-${h.discord}<br>
-${h.roblox}<br>
+${h.discord || h.ccdiscord || ""}<br>
+${h.roblox || h.ccroblox || ""}<br>
 ${h.date}
 </div>
 `;
@@ -311,4 +324,3 @@ load();
 
 </body>
 </html>
-
