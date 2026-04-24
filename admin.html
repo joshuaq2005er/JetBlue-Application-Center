@@ -1,190 +1,156 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>JetBlue Admin Dashboard</title>
+<title>Admin Dashboard</title>
 
-  <style>
-    body {
-      font-family: Arial;
-      margin: 0;
-      background: #eef6ff;
-    }
+<style>
+body{font-family:Arial;background:#eef6ff;margin:0;}
 
-    .header {
-      background: #0073e6;
-      color: white;
-      padding: 20px;
-      text-align: center;
-    }
+.header{
+background:#0073e6;
+color:white;
+padding:20px;
+text-align:center;
+}
 
-    .tabs {
-      display: flex;
-      justify-content: center;
-      background: white;
-      padding: 10px;
-      gap: 10px;
-    }
+.tabs{
+display:flex;
+justify-content:center;
+background:white;
+}
 
-    .tab {
-      padding: 10px 20px;
-      cursor: pointer;
-      border-radius: 8px;
-      background: #eee;
-      font-weight: bold;
-    }
+.tab{
+padding:10px;
+margin:5px;
+background:#eee;
+cursor:pointer;
+}
 
-    .active {
-      background: #0073e6;
-      color: white;
-    }
+.active{background:#0073e6;color:white;}
 
-    .container {
-      width: 90%;
-      margin: 20px auto;
-    }
+.container{width:90%;margin:auto;}
 
-    .card {
-      background: white;
-      padding: 15px;
-      margin: 15px 0;
-      border-radius: 10px;
-      box-shadow: 0 5px 12px rgba(0,0,0,0.08);
-    }
-
-    .label {
-      font-weight: bold;
-      color: #0073e6;
-    }
-
-    select, button {
-      margin-top: 8px;
-      padding: 6px;
-    }
-
-    button {
-      background: red;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-
-    .hidden {
-      display: none;
-    }
-  </style>
+.card{
+background:white;
+padding:15px;
+margin:10px;
+border-radius:10px;
+}
+</style>
 </head>
 
 <body>
 
 <div class="header">
-  <h1>JetBlue Admin Dashboard</h1>
+<h2>Admin Dashboard</h2>
 </div>
 
-<!-- TABS -->
 <div class="tabs">
-  <div class="tab active" onclick="showTab('status')">Status Control</div>
-  <div class="tab" onclick="showTab('apps')">Applications</div>
+<div class="tab active" onclick="show(0)">Status</div>
+<div class="tab" onclick="show(1)">Applications</div>
+<div class="tab" onclick="show(2)">History</div>
 </div>
 
-<!-- STATUS TAB -->
-<div class="container" id="statusTab"></div>
-
-<!-- APPLICATIONS TAB -->
-<div class="container hidden" id="appsTab"></div>
+<div class="container" id="status"></div>
+<div class="container" id="apps" style="display:none;"></div>
+<div class="container" id="history" style="display:none;"></div>
 
 <script>
 
-function safe(v){ return v ? v : "Not provided"; }
-
-function load() {
-  let apps = JSON.parse(localStorage.getItem("applications") || "[]");
-
-  let statusTab = document.getElementById("statusTab");
-  let appsTab = document.getElementById("appsTab");
-
-  statusTab.innerHTML = "";
-  appsTab.innerHTML = "";
-
-  apps.forEach(app => {
-
-    // ================= STATUS TAB =================
-    statusTab.innerHTML += `
-      <div class="card">
-        <div><span class="label">Role:</span> ${safe(app.role)}</div>
-        <div><span class="label">Status:</span> ${safe(app.status)}</div>
-
-        <select onchange="update(${app.id}, this.value)">
-          <option ${app.status==="Pending"?"selected":""}>Pending</option>
-          <option ${app.status==="Accepted"?"selected":""}>Accepted</option>
-          <option ${app.status==="Denied"?"selected":""}>Denied</option>
-        </select>
-
-        <button onclick="del(${app.id})">Delete</button>
-      </div>
-    `;
-
-    // ================= APPLICATION VIEW TAB =================
-    appsTab.innerHTML += `
-      <div class="card">
-
-        <div><span class="label">Role:</span> ${safe(app.role)}</div>
-        <div><span class="label">Status:</span> ${safe(app.status)}</div>
-        <div><span class="label">Date:</span> ${safe(app.date)}</div>
-
-        <hr>
-
-        <div><span class="label">Discord:</span> ${safe(app.discord)}</div>
-        <div><span class="label">Roblox:</span> ${safe(app.roblox)}</div>
-        <div><span class="label">Flight Time:</span> ${safe(app.time)}</div>
-
-        <hr>
-
-        <div><span class="label">Why they applied:</span><br>${safe(app.why)}</div>
-        <br>
-        <div><span class="label">Strengths:</span><br>${safe(app.strengths)}</div>
-
-      </div>
-    `;
-  });
+let pass=prompt("Admin Password:");
+if(pass!=="1234"){
+document.body.innerHTML="DENIED";
+throw new Error();
 }
 
-function update(id, status){
-  let apps = JSON.parse(localStorage.getItem("applications") || "[]");
+function get(k){return JSON.parse(localStorage.getItem(k)||"[]");}
 
-  apps = apps.map(a=>{
-    if(a.id === id) a.status = status;
-    return a;
-  });
-
-  localStorage.setItem("applications", JSON.stringify(apps));
-  load();
+function toggle(role){
+let s=localStorage.getItem("role_"+role)||"OPEN";
+localStorage.setItem("role_"+role,s==="OPEN"?"CLOSED":"OPEN");
+load();
 }
 
-function del(id){
-  let apps = JSON.parse(localStorage.getItem("applications") || "[]");
+function load(){
 
-  apps = apps.filter(a => a.id !== id);
+let roles=["Flight Deck","Cabin Crew","Ground Crew"];
 
-  localStorage.setItem("applications", JSON.stringify(apps));
-  load();
+let statusDiv=document.getElementById("status");
+let appsDiv=document.getElementById("apps");
+let historyDiv=document.getElementById("history");
+
+statusDiv.innerHTML="";
+appsDiv.innerHTML="";
+historyDiv.innerHTML="";
+
+// STATUS
+roles.forEach(r=>{
+let s=localStorage.getItem("role_"+r)||"OPEN";
+
+statusDiv.innerHTML+=`
+<div class="card">
+<b>${r}</b> - ${s}
+<button onclick="toggle('${r}')">Toggle</button>
+</div>
+`;
+});
+
+// APPLICATIONS (FULL ANSWERS)
+get("apps").forEach(a=>{
+appsDiv.innerHTML+=`
+<div class="card">
+
+<h3>${a.role}</h3>
+
+<b>Discord:</b> ${a.discord}<br>
+<b>Roblox:</b> ${a.roblox}<br>
+<b>Time:</b> ${a.time}<br>
+<b>Age:</b> ${a.age}<br><br>
+
+<b>WHY:</b><br>${a.why}<br><br>
+
+<b>FLIGHT:</b><br>
+Flaps: ${a.flaps}<br>
+VFR: ${a.vfr}<br>
+ILS: ${a.ils}<br>
+Chart: ${a.chart}<br>
+Callouts: ${a.callouts}<br>
+Plan: ${a.plan}<br><br>
+
+<b>SCENARIOS:</b><br>
+${a.disturb}<br>
+${a.fire}<br>
+${a.trolls}
+
+</div>
+`;
+});
+
+// HISTORY
+get("history").forEach(a=>{
+historyDiv.innerHTML+=`
+<div class="card">
+<b>${a.role}</b><br>
+${a.discord}<br>
+${a.roblox}<br>
+${a.date}
+</div>
+`;
+});
+
 }
 
-// TAB SWITCHING
-function showTab(tab){
-  document.getElementById("statusTab").classList.add("hidden");
-  document.getElementById("appsTab").classList.add("hidden");
+function show(i){
 
-  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+["status","apps","history"].forEach((id,j)=>{
+document.getElementById(id).style.display=j===i?"block":"none";
+});
 
-  if(tab === "status"){
-    document.getElementById("statusTab").classList.remove("hidden");
-    document.querySelectorAll(".tab")[0].classList.add("active");
-  }
+document.querySelectorAll(".tab").forEach((t,j)=>{
+t.classList.remove("active");
+if(i===j)t.classList.add("active");
+});
 
-  if(tab === "apps"){
-    document.getElementById("appsTab").classList.remove("hidden");
-    document.querySelectorAll(".tab")[1].classList.add("active");
-  }
 }
 
 load();
