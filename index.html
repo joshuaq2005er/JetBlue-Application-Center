@@ -28,11 +28,17 @@ padding:20px;
 .card{
 width:260px;
 background:white;
-padding:15px;
-border-radius:12px;
+padding:18px;
+border-radius:14px;
 text-decoration:none;
 color:black;
 position:relative;
+box-shadow:0 8px 20px rgba(0,0,0,0.08);
+transition:0.2s;
+}
+
+.card:hover{
+transform:translateY(-3px);
 }
 
 .badge{
@@ -43,10 +49,15 @@ padding:5px 10px;
 border-radius:20px;
 color:white;
 font-size:12px;
+font-weight:bold;
 }
 
 .open{background:green;}
 .closed{background:red;}
+
+small{
+color:#666;
+}
 </style>
 </head>
 
@@ -54,32 +65,64 @@ font-size:12px;
 
 <div class="header">
 <h1>JetBlue Careers</h1>
-<p>Select a role</p>
+<small>Select a position to apply</small>
 </div>
 
 <div class="grid">
 
 <a class="card" href="apply.html?role=Flight%20Deck">
-<div class="badge open">OPEN</div>
-<b>Flight Deck</b><br>Take control of aircraft.
+<div class="badge" id="fd"></div>
+<b>Flight Deck</b><br>
+<small>Take control of aircraft operations</small>
 </a>
 
 <a class="card" href="apply.html?role=Cabin%20Crew">
-<div class="badge open">OPEN</div>
-<b>Cabin Crew</b><br>Passenger service.
+<div class="badge" id="cc"></div>
+<b>Cabin Crew</b><br>
+<small>Passenger service & safety</small>
 </a>
 
 <a class="card" href="apply.html?role=Ground%20Crew">
-<div class="badge closed">CLOSED</div>
-<b>Ground Crew</b><br>Aircraft safety.
+<div class="badge" id="gc"></div>
+<b>Ground Crew</b><br>
+<small>Aircraft operations support</small>
 </a>
 
 <a class="card" href="admin.html">
 <div class="badge open">ADMIN</div>
-<b>Admin Panel</b><br>Manage applications.
+<b>Admin Panel</b><br>
+<small>Manage applications</small>
 </a>
 
 </div>
+
+<script>
+
+/* SAFE STATUS FUNCTION */
+function getStatus(role){
+let s = localStorage.getItem("roleStatus_"+role);
+if(!s){
+localStorage.setItem("roleStatus_"+role,"OPEN");
+return "OPEN";
+}
+return s;
+}
+
+function setBadge(id,role){
+let el=document.getElementById(id);
+let status=getStatus(role);
+
+el.innerText=status;
+
+el.className="badge " + (status==="OPEN"?"open":"closed");
+}
+
+/* APPLY STATUS */
+setBadge("fd","Flight Deck");
+setBadge("cc","Cabin Crew");
+setBadge("gc","Ground Crew");
+
+</script>
 
 </body>
 </html>
