@@ -1,104 +1,98 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>JetBlue Careers</title>
+<title>JetBlue Application Center</title>
 
 <style>
 body{
 margin:0;
 font-family:Arial;
-background:#eef6ff;
+background:linear-gradient(135deg,#e6f3ff,#f7fbff);
 }
 
 .header{
+background:#0073e6;
+color:white;
+padding:20px;
 text-align:center;
-padding:40px;
+font-size:20px;
 }
 
-h1{color:#0073e6;}
-
-.grid{
-display:flex;
-justify-content:center;
-flex-wrap:wrap;
-gap:20px;
-padding:20px;
+.container{
+width:800px;
+margin:40px auto;
 }
 
 .card{
-width:260px;
 background:white;
-padding:18px;
-border-radius:14px;
-text-decoration:none;
-color:black;
-position:relative;
+padding:20px;
+border-radius:16px;
+margin:15px 0;
 box-shadow:0 8px 20px rgba(0,0,0,0.08);
+cursor:pointer;
 transition:0.2s;
 }
 
 .card:hover{
-transform:translateY(-3px);
+transform:scale(1.02);
 }
 
-.badge{
-position:absolute;
-top:10px;
-right:10px;
-padding:5px 10px;
-border-radius:20px;
-color:white;
-font-size:12px;
+.status{
 font-weight:bold;
 }
 
-.open{background:green;}
-.closed{background:red;}
+.open{color:green;}
+.closed{color:red;}
 
-small{
-color:#666;
+#errorBox{
+position:fixed;
+top:20px;
+left:50%;
+transform:translateX(-50%);
+background:red;
+color:white;
+padding:15px 25px;
+border-radius:12px;
+display:none;
+box-shadow:0 10px 20px rgba(0,0,0,0.2);
+z-index:999;
 }
 </style>
 </head>
 
 <body>
 
+<div id="errorBox"></div>
+
 <div class="header">
-<h1>JetBlue Careers</h1>
-<small>Select a position to apply</small>
+JetBlue Application Center
 </div>
 
-<div class="grid">
+<div class="container">
 
-<a class="card" href="apply.html?role=Flight%20Deck">
-<div class="badge" id="fd"></div>
-<b>Flight Deck</b><br>
-<small>Take control of aircraft operations</small>
-</a>
+<div class="card" onclick="openApp('Flight Deck','apply.html?role=Flight%20Deck')">
+<h3>Flight Deck</h3>
+<p>Take the reigns and lead the way to unlimited destinations.</p>
+Status: <span id="fd" class="status"></span>
+</div>
 
-<a class="card" href="apply.html?role=Cabin%20Crew">
-<div class="badge" id="cc"></div>
-<b>Cabin Crew</b><br>
-<small>Passenger service & safety</small>
-</a>
+<div class="card" onclick="openApp('Cabin Crew','apply.html?role=Cabin%20Crew')">
+<h3>Cabin Crew</h3>
+<p>Provide the utmost comfort and hospitality to our passengers.</p>
+Status: <span id="cc" class="status"></span>
+</div>
 
-<a class="card" href="apply.html?role=Ground%20Crew">
-<div class="badge" id="gc"></div>
-<b>Ground Crew</b><br>
-<small>Aircraft operations support</small>
-</a>
-
-<a class="card" href="admin.html">
-<div class="badge open">ADMIN</div>
-<b>Admin Panel</b><br>
-<small>Manage applications</small>
-</a>
+<div class="card" onclick="openApp('Ground Crew','apply.html?role=Ground%20Crew')">
+<h3>Ground Crew</h3>
+<p>Ensure safety and readiness of aircraft operations.</p>
+Status: <span id="gc" class="status"></span>
+</div>
 
 </div>
 
 <script>
 
-/* SAFE STATUS FUNCTION */
+/* ===== STATUS SYSTEM ===== */
 function getStatus(role){
 let s = localStorage.getItem("roleStatus_"+role);
 if(!s){
@@ -108,19 +102,42 @@ return "OPEN";
 return s;
 }
 
-function setBadge(id,role){
+function setStatus(id,role){
 let el=document.getElementById(id);
-let status=getStatus(role);
+let s=getStatus(role);
 
-el.innerText=status;
-
-el.className="badge " + (status==="OPEN"?"open":"closed");
+el.innerText=s;
+el.className="status "+(s==="OPEN"?"open":"closed");
 }
 
-/* APPLY STATUS */
-setBadge("fd","Flight Deck");
-setBadge("cc","Cabin Crew");
-setBadge("gc","Ground Crew");
+/* ===== ERROR MESSAGE ===== */
+function showError(msg){
+let box=document.getElementById("errorBox");
+box.innerText=msg;
+box.style.display="block";
+
+setTimeout(()=>{
+box.style.display="none";
+},5000);
+}
+
+/* ===== OPEN APPLICATION ===== */
+function openApp(role,link){
+
+let status=getStatus(role);
+
+if(status==="CLOSED"){
+showError("Current application you've chosen is closed.");
+return;
+}
+
+location.href=link;
+}
+
+/* ===== INIT ===== */
+setStatus("fd","Flight Deck");
+setStatus("cc","Cabin Crew");
+setStatus("gc","Ground Crew");
 
 </script>
 
