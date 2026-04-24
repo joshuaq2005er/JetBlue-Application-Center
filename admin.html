@@ -57,6 +57,7 @@ border-radius:6px;
 cursor:pointer;
 }
 
+/* MODAL */
 #modal{
 display:none;
 position:fixed;
@@ -102,7 +103,7 @@ overflow:auto;
 <!-- MODAL -->
 <div id="modal">
 <div id="modalBox">
-<h3>Application Details (FULL)</h3>
+<h3>Application Details</h3>
 <div id="modalContent"></div>
 <button onclick="closeModal()">Close</button>
 </div>
@@ -114,18 +115,13 @@ overflow:auto;
 let pass = prompt("Admin Password:");
 
 if(pass !== "JB123478JBC"){
-document.body.innerHTML = "<h1 style='color:red;text-align:center;margin-top:100px'>ACCESS DENIED</h1>";
+document.body.innerHTML="<h1 style='color:red;text-align:center;margin-top:100px'>ACCESS DENIED</h1>";
 throw new Error();
-}
-
-/* STORAGE */
-function get(key){
-return JSON.parse(localStorage.getItem(key) || "[]");
 }
 
 /* STATUS */
 function getStatus(role){
-let s = localStorage.getItem("roleStatus_"+role);
+let s=localStorage.getItem("roleStatus_"+role);
 if(!s){
 localStorage.setItem("roleStatus_"+role,"OPEN");
 return "OPEN";
@@ -134,106 +130,21 @@ return s;
 }
 
 function toggleStatus(role){
-let s = getStatus(role);
+let s=getStatus(role);
 localStorage.setItem("roleStatus_"+role, s==="OPEN"?"CLOSED":"OPEN");
 load();
 }
 
-/* HIDE / DELETE */
-function hideApp(i){
-let apps=get("apps");
-apps[i].hidden=!apps[i].hidden;
-localStorage.setItem("apps",JSON.stringify(apps));
-load();
-}
-
-function deleteApp(i){
-let apps=get("apps");
-apps[i].deleted=true;
-localStorage.setItem("apps",JSON.stringify(apps));
-load();
-}
-
-/* ================= FULL SHOW ALL QUESTIONS ================= */
-function showMore(i){
-let a=get("apps")[i];
-
-document.getElementById("modalContent").innerHTML=`
-
-<h3>ROLE: ${a.role}</h3>
-
-<hr>
-
-<h4>📌 Applicant Info</h4>
-Discord Username: ${a.discord || ""}<br>
-Discord ID: ${a.discordid || ""}<br>
-Roblox Username: ${a.roblox || ""}<br>
-PTFS Time: ${a.time || ""}<br>
-Age Group: ${a.age || ""}<br>
-Proof: ${a.proof || ""}<br>
-
-<hr>
-
-<h4>📌 Activity (ALL ROLES)</h4>
-Timezone: ${a.timezone || ""}<br>
-Roblox Activity: ${a.robloxact || ""}<br>
-Discord Activity: ${a.discordact || ""}<br>
-Device: ${a.device || ""}<br>
-Grammar: ${a.grammar || ""}<br>
-
-<hr>
-
-<h4>📌 Cabin Crew Section (if used)</h4>
-Describe Yourself: ${a.ccwords || ""}<br>
-Experience Cabin Crew: ${a.ccexp || ""}<br>
-Why JetBlue: ${a.ccwhy || ""}<br>
-Standout: ${a.ccstandout || ""}<br>
-Strengths: ${a.ccstrengths || ""}<br>
-
-<hr>
-
-<h4>📌 Flight Knowledge</h4>
-Flaps: ${a.flaps || ""}<br>
-VFR/IFR: ${a.vfr || ""}<br>
-ILS: ${a.ils || ""}<br>
-Airport Chart: ${a.chart || ""}<br>
-Callouts: ${a.callouts || ""}<br>
-Flight Plan: ${a.flightplan || ""}<br>
-
-<hr>
-
-<h4>📌 Scenarios</h4>
-Scenario 1: ${a.s1 || ""}<br>
-Scenario 2: ${a.s2 || ""}<br>
-Scenario 3: ${a.s3 || ""}<br>
-Scenario 4 (Cabin Crew): ${a.s4 || ""}<br>
-
-<hr>
-
-<h4>📌 Agreements</h4>
-Agree 1: ${a.agree1 || ""}<br>
-Agree 2: ${a.agree2 || ""}<br>
-
-<hr>
-
-<h4>📌 Legacy Cabin Crew Fields</h4>
-CC Discord: ${a.ccdiscord || ""}<br>
-CC Discord ID: ${a.ccdiscordid || ""}<br>
-CC Roblox: ${a.ccroblox || ""}<br>
-CC Time: ${a.cctime || ""}<br>
-CC Age: ${a.ccage || ""}<br>
-
-`;
-
-document.getElementById("modal").style.display="block";
-}
-
-function closeModal(){
-document.getElementById("modal").style.display="none";
-}
-
-/* LOAD */
+/* LOAD BOTH SYSTEMS */
 function load(){
+
+let fdApps = JSON.parse(localStorage.getItem("flightdeck_apps") || "[]");
+let ccApps = JSON.parse(localStorage.getItem("cabincrew_apps") || "[]");
+
+let apps = [
+...fdApps.map(a=>({...a,type:"FD"})),
+...ccApps.map(a=>({...a,type:"CC"}))
+];
 
 let roles=["Flight Deck","Cabin Crew","Ground Crew"];
 
@@ -259,27 +170,16 @@ Status: <b style="color:${s==='OPEN'?'green':'red'}">${s}</b><br>
 });
 
 /* APPLICATIONS */
-let apps=get("apps");
-
 apps.forEach((a,i)=>{
-if(a.deleted) return;
 
 appsDiv.innerHTML+=`
-<div class="card" style="opacity:${a.hidden?0.5:1}">
+<div class="card">
 
-<h3>${a.role}</h3>
+<h3>${a.type==="FD"?"✈ Flight Deck":"💺 Cabin Crew"}</h3>
 
 <b>Discord:</b> ${a.discord || a.ccdiscord || ""}<br>
 <b>Roblox:</b> ${a.roblox || a.ccroblox || ""}<br>
 <b>Date:</b> ${a.date}<br>
-
-<button onclick="hideApp(${i})">
-${a.hidden?"Unhide":"Hide"} Application
-</button>
-
-<button onclick="deleteApp(${i})" style="background:red;color:white;">
-Delete Application
-</button>
 
 <button onclick="showMore(${i})" style="background:#0073e6;color:white;">
 Show Full Application
@@ -289,20 +189,104 @@ Show Full Application
 `;
 });
 
-/* HISTORY */
-let history=get("history")||[];
+/* STORE GLOBAL FOR MODAL */
+window.allApps=apps;
 
-history.forEach(h=>{
-historyDiv.innerHTML+=`
+/* HISTORY */
+let history=[];
+
+apps.forEach(a=>{
+history.push(a);
+});
+
+historyDiv.innerHTML=history.map(h=>`
 <div class="card">
-<b>${h.role}</b><br>
+<b>${h.type}</b><br>
 ${h.discord || h.ccdiscord || ""}<br>
 ${h.roblox || h.ccroblox || ""}<br>
 ${h.date}
 </div>
-`;
-});
+`).join("");
 
+}
+
+/* SHOW FULL APPLICATION */
+function showMore(i){
+
+let a=window.allApps[i];
+
+let html="";
+
+if(a.type==="FD"){
+html=`
+<h3>✈ FLIGHT DECK APPLICATION</h3>
+Discord: ${a.discord}<br>
+Discord ID: ${a.discordid}<br>
+Roblox: ${a.roblox}<br>
+Time: ${a.time}<br>
+Age: ${a.age}<br>
+Proof: ${a.proof}<br><br>
+
+Timezone: ${a.timezone}<br>
+Roblox Activity: ${a.robloxact}<br>
+Discord Activity: ${a.discordact}<br>
+Device: ${a.device}<br>
+Grammar: ${a.grammar}<br><br>
+
+Words: ${a.words}<br>
+Experience: ${a.exp}<br>
+Mic: ${a.mic}<br>
+Why: ${a.why}<br>
+Standout: ${a.standout}<br>
+Strengths: ${a.strengths}<br><br>
+
+Flaps: ${a.flaps}<br>
+VFR: ${a.vfr}<br>
+ILS: ${a.ils}<br>
+Chart: ${a.chart}<br>
+Callouts: ${a.callouts}<br>
+Flightplan: ${a.flightplan}<br><br>
+
+S1: ${a.s1}<br>
+S2: ${a.s2}<br>
+S3: ${a.s3}<br>
+`;
+}
+
+if(a.type==="CC"){
+html=`
+<h3>💺 CABIN CREW APPLICATION</h3>
+Discord: ${a.ccdiscord}<br>
+Discord ID: ${a.ccdiscordid}<br>
+Roblox: ${a.ccroblox}<br>
+Time: ${a.cctime}<br>
+Age: ${a.ccage}<br><br>
+
+Timezone: ${a.cctimezone}<br>
+Roblox Activity: ${a.ccrobloxact}<br>
+Discord Activity: ${a.ccdiscordact}<br>
+Device: ${a.ccdevice}<br>
+Grammar: ${a.ccgrammar}<br><br>
+
+About: ${a.ccwords}<br>
+Experience: ${a.ccexp}<br>
+Why: ${a.ccwhy}<br>
+Standout: ${a.ccstandout}<br>
+Strengths: ${a.ccstrengths}<br><br>
+
+S1: ${a.ccs1}<br>
+S2: ${a.ccs2}<br>
+S3: ${a.ccs3}<br>
+S4: ${a.ccs4}<br>
+`;
+}
+
+document.getElementById("modalContent").innerHTML=html;
+document.getElementById("modal").style.display="block";
+}
+
+function closeModal(){
+document.getElementById("modal").style.display="none";
 }
 
 /* TABS */
