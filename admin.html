@@ -92,11 +92,9 @@ overflow:auto;
 </div>
 
 <div class="container">
-
 <div id="status"></div>
 <div id="apps" style="display:none;"></div>
 <div id="history" style="display:none;"></div>
-
 </div>
 
 <div id="modal">
@@ -114,6 +112,11 @@ let pass = prompt("Admin Password:");
 if(pass !== "JB123478JBFD"){
 document.body.innerHTML = "<h1 style='color:red;text-align:center;margin-top:100px'>ACCESS DENIED</h1>";
 throw new Error();
+}
+
+/* SAFE VALUE (prevents undefined) */
+function val(x){
+return (x === undefined || x === null || x === "") ? "N/A" : x;
 }
 
 /* STORAGE */
@@ -137,7 +140,7 @@ localStorage.setItem("roleStatus_"+role, s==="OPEN"?"CLOSED":"OPEN");
 load();
 }
 
-/* APP ACTIONS */
+/* ACTIONS */
 function hideApp(i){
 let apps=get("apps");
 apps[i].hidden=!apps[i].hidden;
@@ -152,60 +155,60 @@ localStorage.setItem("apps",JSON.stringify(apps));
 load();
 }
 
-/* MODAL */
+/* MODAL (YOUR QUESTIONS EXACTLY PRESERVED) */
 function showMore(i){
 let a=get("apps")[i];
 
 document.getElementById("modalContent").innerHTML=`
 
-<b>Role:</b> ${a.role}<br><br>
+<b>Role:</b> ${val(a.role)}<br><br>
 
 <b>Applicant Information:</b><br>
-Discord Username: ${a.discord}<br>
-Discord ID: ${a.discordid}<br>
-Roblox Username: ${a.roblox}<br>
-PTFS minutes: ${a.time}<br>
-Age Group: ${a.age}<br>
-Outfit Picker Proof: ${a.proof}<br><br>
+Discord Username: ${val(a.discord)}<br>
+Discord ID: ${val(a.discordid)}<br>
+Roblox Username: ${val(a.roblox)}<br>
+PTFS minutes: ${val(a.time)}<br>
+RobloxAge Group: ${val(a.age)}<br>
+Outfit Picker Proof: ${val(a.proof)}<br><br>
 
 <hr>
 
 <b>Activity and Availability:</b><br>
-Timezone: ${a.timezone}<br>
-Roblox Activity out of 5: ${a.robloxact}<br>
-Discord activity out of 5: ${a.discordact}<br>
-Device: ${a.device}<br><br>
+Timezone: ${val(a.timezone)}<br>
+Roblox Activity out of 5: ${val(a.robloxact)}<br>
+Discord activity out of 5: ${val(a.discordact)}<br>
+Device: ${val(a.device)}<br><br>
 
 <hr>
 
 <b>Flight-related questions:</b><br>
-3 words staff will describe you as: ${a.words}<br>
-Experience: ${a.exp}<br>
-Working Mic: ${a.mic}<br>
-Why do you want to work at JetBlue? (2 sentences required): ${a.why}<br>
-WWhat makes you stand out over other applicants? (2+ sentences required): ${a.standout}<br>
-What are your weaknesses and strengths? (2+ each): ${a.strengths}<br><br>
+3 words staff will describe you as: ${val(a.words)}<br>
+Experience: ${val(a.exp)}<br>
+Working Mic: ${val(a.mic)}<br>
+Why do you want to work at JetBlue? (2 sentences required): ${val(a.why)}<br>
+WWhat makes you stand out over other applicants? (2+ sentences required): ${val(a.standout)}<br>
+What are your weaknesses and strengths? (2+ each): ${val(a.strengths)}<br><br>
 
 <b>Flight Knowledge:</b><br>
-Explain when to retract flaps.: ${a.flaps}<br>
-Explain what VFR and IFR mean.: ${a.vfr}<br>
-What does ILS stand for and when is it used?: ${a.ils}<br>
-What is the point of a airport chart?: ${a.chart}<br>
-Choose the appropriate callouts needed during the takeoff roll.: ${a.callouts}<br>
-What is a flight plan and why are they crucial?: ${a.flightplan}<br><br>
+Explain when to retract flaps.: ${val(a.flaps)}<br>
+Explain what VFR and IFR mean.: ${val(a.vfr)}<br>
+What does ILS stand for and when is it used?: ${val(a.ils)}<br>
+What is the point of a airport chart?: ${val(a.chart)}<br>
+Choose the appropriate callouts needed during the takeoff roll.: ${val(a.callouts)}<br>
+What is a flight plan and why are they crucial?: ${val(a.flightplan)}<br><br>
 
 <hr>
 
 <b>Scenarios:</b><br>
-What would you do if a passenger was causing disturbance on the plane however you were still in the air?: ${a.s1}<br>
-What would you do if suddenly an engine caught on fire?: ${a.s2}<br>
-What would you do if there was trollers aboard the flight attempting to ruin it?: ${a.s3}<br><br>
+What would you do if a passenger was causing disturbance on the plane however you were still in the air?: ${val(a.s1)}<br>
+What would you do if suddenly an engine caught on fire?: ${val(a.s2)}<br>
+What would you do if there was trollers aboard the flight attempting to ruin it?: ${val(a.s3)}<br><br>
 
 <hr>
 
 <b>Agreements:</b><br>
-Do you agree to not leak ANY documents provided?(If no or maybe=fail.): ${a.agree1}<br>
-Do you agree to follow all rules as a flight deck if accepted?(If no or maybe=fail.): ${a.agree2}<br>
+Do you agree to not leak ANY documents provided?(If no or maybe=fail.): ${val(a.agree1)}<br>
+Do you agree to follow all rules as a flight deck if accepted?(If no or maybe=fail.): ${val(a.agree2)}<br>
 `;
 
 document.getElementById("modal").style.display="block";
@@ -228,7 +231,7 @@ statusDiv.innerHTML="";
 appsDiv.innerHTML="";
 historyDiv.innerHTML="";
 
-/* STATUS TAB */
+/* STATUS */
 roles.forEach(r=>{
 let s=getStatus(r);
 
@@ -241,22 +244,20 @@ Status: <b style="color:${s==='OPEN'?'green':'red'}">${s}</b><br>
 `;
 });
 
-/* APPLICATIONS TAB */
+/* APPLICATIONS (ONLY FLIGHT DECK) */
 let apps=get("apps");
 
 apps.forEach((a,i)=>{
 if(a.deleted) return;
-
-/* ✅ FILTER — ONLY FLIGHT DECK */
 if(a.role !== "Flight Deck") return;
 
 appsDiv.innerHTML+=`
 <div class="card" style="opacity:${a.hidden?0.5:1}">
 <h3>${a.role}</h3>
 
-<b>Discord:</b> ${a.discord}<br>
-<b>Roblox:</b> ${a.roblox}<br>
-<b>Date:</b> ${a.date}<br>
+<b>Discord:</b> ${val(a.discord)}<br>
+<b>Roblox:</b> ${val(a.roblox)}<br>
+<b>Date:</b> ${val(a.date)}<br>
 
 <button onclick="hideApp(${i})">
 ${a.hidden?"Unhide":"Hide"} Application
@@ -274,20 +275,18 @@ Show More
 `;
 });
 
-/* HISTORY TAB */
+/* HISTORY (ONLY FLIGHT DECK) */
 let history=get("history")||[];
 
 history.forEach(h=>{
-
-/* ALSO FILTER HISTORY */
 if(h.role !== "Flight Deck") return;
 
 historyDiv.innerHTML+=`
 <div class="card">
-<b>${h.role}</b><br>
-${h.discord}<br>
-${h.roblox}<br>
-${h.date}
+<b>${val(h.role)}</b><br>
+${val(h.discord)}<br>
+${val(h.roblox)}<br>
+${val(h.date)}
 </div>
 `;
 });
@@ -307,7 +306,6 @@ t.classList.toggle("active",i===j);
 
 }
 
-/* INIT */
 load();
 
 </script>
